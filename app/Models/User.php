@@ -26,7 +26,17 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
         ];
     }
+
+    public function workPattern()
+    {
+        return $this->belongsTo(WorkPattern::class);
+    }
+
+    public function device()
+    {
+        return $this->belongsTo(Device::class);
+    }
 }
+
