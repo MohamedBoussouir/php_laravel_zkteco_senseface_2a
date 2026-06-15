@@ -85,3 +85,4 @@ use App\Http\Controllers\SettingsController;
 Route::get('/settings', [SettingsController::class, 'index']);
 Route::post('/settings/time', [SettingsController::class, 'updateTime']);
 Route::post('/settings/logging-mode', [SettingsController::class, 'updateLoggingMode']);
+Route::post('/settings/wallpaper', [SettingsController::class, 'updateWallpaper']);

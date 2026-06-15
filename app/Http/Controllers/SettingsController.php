@@ -94,4 +94,47 @@ class SettingsController extends Controller
 
         return back()->with('success', 'Strategy loaded successfully');
     }
+
+    public function updateWallpaper(Request $request)
+    {
+        $request->validate([
+            'device_id' => 'required',
+            'wallpaper' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+        ]);
+
+        $deviceId = $request->device_id;
+        $image = $request->file('wallpaper');
+
+        $imageContent = file_get_contents($image->getRealPath());
+        $base64 = base64_encode($imageContent);
+
+        $command = "SET OPTIONS Wallpaper={$base64}";
+
+        if ($deviceId === 'all') {
+            $devices = Device::where('status', 'approved')->get();
+            foreach ($devices as $device) {
+                DeviceCommand::where('device_id', $device->id)
+                    ->where('executed', false)
+                    ->where('command', 'LIKE', 'SET OPTIONS Wallpaper%')
+                    ->delete();
+
+                DeviceCommand::create([
+                    'device_id' => $device->id,
+                    'command' => $command,
+                ]);
+            }
+        } else {
+            DeviceCommand::where('device_id', $deviceId)
+                ->where('executed', false)
+                ->where('command', 'LIKE', 'SET OPTIONS Wallpaper%')
+                ->delete();
+
+            DeviceCommand::create([
+                'device_id' => $deviceId,
+                'command' => $command,
+            ]);
+        }
+
+        return back()->with('success', 'Wallpaper update command sent to device(s). The device will update its background on next sync.');
+    }
 }

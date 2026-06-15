@@ -16,14 +16,14 @@ class AttendanceController extends Controller
 
         $query = Attendance::query();
 
-        $query->orderBy('timestamp', 'desc');
+        $query->latest();
 
         if ($startDate) {
-            $query->where('timestamp', '>=', $startDate . ' 00:00:00');
+            $query->whereRaw("CAST(timestamp AS DATETIME) >= ?", [$startDate . ' 00:00:00']);
         }
 
         if ($endDate) {
-            $query->where('timestamp', '<=', $endDate . ' 23:59:59');
+            $query->whereRaw("CAST(timestamp AS DATETIME) <= ?", [$endDate . ' 23:59:59']);
         }
 
         if ($search) {
@@ -69,8 +69,8 @@ class AttendanceController extends Controller
         $totalPunches = $query->count();
         
         $uniqueQuery = Attendance::query();
-        if ($startDate) $uniqueQuery->where('timestamp', '>=', $startDate . ' 00:00:00');
-        if ($endDate) $uniqueQuery->where('timestamp', '<=', $endDate . ' 23:59:59');
+        if ($startDate) $uniqueQuery->whereRaw("CAST(timestamp AS DATETIME) >= ?", [$startDate . ' 00:00:00']);
+        if ($endDate) $uniqueQuery->whereRaw("CAST(timestamp AS DATETIME) <= ?", [$endDate . ' 23:59:59']);
         if ($search) {
             $uniqueQuery->where(function ($q) use ($search) {
                 $q->where('user_name', 'LIKE', '%' . $search . '%')

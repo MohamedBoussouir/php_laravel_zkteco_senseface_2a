@@ -43,9 +43,9 @@ class ReportController extends Controller
         $shifts = Shift::all();
         
         $endDatePlusOne = Carbon::parse($endDate)->addDay()->format('Y-m-d');
-        $logs = Attendance::where('timestamp', '>=', $startDate . ' 00:00:00')
-            ->where('timestamp', '<=', $endDatePlusOne . ' 23:59:59')
-            ->orderBy('timestamp', 'asc')
+        $logs = Attendance::whereRaw("CAST(timestamp AS DATETIME) >= ?", [$startDate . ' 00:00:00'])
+            ->whereRaw("CAST(timestamp AS DATETIME) <= ?", [$endDatePlusOne . ' 23:59:59'])
+            ->orderByRaw("CAST(timestamp AS DATETIME) asc")
             ->get();
 
         $period = CarbonPeriod::create($startDate, $endDate);
