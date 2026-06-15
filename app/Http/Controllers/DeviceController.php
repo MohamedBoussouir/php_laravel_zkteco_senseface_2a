@@ -157,12 +157,43 @@ class DeviceController extends Controller
                     \App\Models\User::updateOrCreate(
                         ['user_id' => $userData['pin'], 'device_id' => $device->id],
                         [
+                            'uid' => $userData['uid'] ?? null,
                             'name' => $userData['name'] ?? 'Unknown',
                             'role' => isset($userData['pri']) ? (int)$userData['pri'] : 0,
                             'password' => $userData['passwd'] ?? null,
                             'card_number' => $userData['card'] ?? null
                         ]
                     );
+                }
+            }
+        }
+        
+        // معالجة بيانات الحضور والانصراف (ATTLOG)
+        if (strtoupper($table) === 'ATTLOG') {
+            $lines = explode("\n", trim($content));
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (empty($line)) continue;
+
+                $parts = explode("\t", $line);
+                if (count($parts) >= 3) {
+                    $pin = trim($parts[0]);
+                    $timestamp = trim($parts[1]);
+                    $status = trim($parts[2]);
+                    
+                    if ($device) {
+                        $user = \App\Models\User::where('user_id', $pin)->where('device_id', $device->id)->first();
+                        $userName = $user ? $user->name : null;
+
+                        \App\Models\Attendance::firstOrCreate([
+                            'user_id' => $pin,
+                            'timestamp' => $timestamp,
+                            'device_id' => $device->id
+                        ], [
+                            'user_name' => $userName,
+                            'status' => (int)$status
+                        ]);
+                    }
                 }
             }
         }
@@ -194,10 +225,11 @@ class DeviceController extends Controller
         // تحديث آخر ظهور
         $device->update(['last_seen' => now()->timestamp]);
 
-        // جلب الأوامر غير المنفذة لهذا الجهاز
+        // جلب الأوامر غير المنفذة ولم يتم إرسالها مسبقاً (لتجنب التكرار اللانهائي)
         $commands = \Illuminate\Support\Facades\DB::table('device_commands')
             ->where('device_id', $device->id)
             ->where('executed', false)
+            ->where('synced', false)
             ->get();
 
         if ($commands->isEmpty()) {
@@ -219,11 +251,17 @@ class DeviceController extends Controller
         return response(trim($responseBody), 200)->header('Content-Type', 'text/plain');
     }
 
-    // الدالة الرابعة: تأكيد تنفيذ الأوامر من قبل الجهاز (POST)
     public function deviceCmd(Request $request)
     {
         // الجهاز يرسل POST إلى هنا ليخبرنا عن حالة الأوامر التي نفذها
         $content = $request->getContent();
+        $sn = $request->query('SN');
+
+        Payload::create([
+            'device_sn' => $sn ?? 'unknown',
+            'endpoint'  => "POST /iclock/devicecmd",
+            'content'   => $content
+        ]);
         
         // النص يكون بصيغة: ID=1&Return=0
         $lines = explode("\n", trim($content));

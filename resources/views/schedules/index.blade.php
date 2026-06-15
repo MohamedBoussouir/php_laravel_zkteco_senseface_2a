@@ -55,6 +55,8 @@
     .btn-red:hover { background: rgba(239, 68, 68, 0.4); }
     .btn-green { background: rgba(16, 185, 129, 0.2); color: #34d399; }
     .btn-green:hover { background: rgba(16, 185, 129, 0.4); }
+    .btn-yellow { background: rgba(234, 179, 8, 0.2); color: #facc15; }
+    .btn-yellow:hover { background: rgba(234, 179, 8, 0.4); }
 
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; }
     .modal-content { background: var(--sidebar-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color); width: 450px; max-width: 90%; }
@@ -129,6 +131,7 @@
                     <p>{{ $pattern->days->where('shift_id', '!=', null)->count() }} Work Days Configured</p>
                 </div>
                 <div style="display:flex; gap: 8px;">
+                    <button class="action-btn btn-yellow" onclick="document.getElementById('assignPatternModal{{ $pattern->id }}').style.display='flex'" title="Assign to Users"><i class="fas fa-users"></i></button>
                     <button class="action-btn btn-green" onclick="document.getElementById('configPatternModal{{ $pattern->id }}').style.display='flex'" title="Configure Days"><i class="fas fa-calendar-week"></i></button>
                     <button class="action-btn btn-blue" onclick="openEditPattern({{ $pattern->id }}, '{{ addslashes($pattern->name) }}')" title="Rename Pattern"><i class="fas fa-edit"></i></button>
                     <form action="/schedules/patterns/{{ $pattern->id }}/delete" method="POST" onsubmit="return confirm('Delete this work pattern?');">
@@ -171,8 +174,133 @@
                 </div>
             </div>
 
+            <!-- Assign Pattern Modal -->
+            <div id="assignPatternModal{{ $pattern->id }}" class="modal-overlay">
+                <div class="modal-content" style="width: 500px;">
+                    <h3><i class="fas fa-users text-blue-400"></i> Assign: {{ $pattern->name }}</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Select the employees who should follow this work pattern. Unchecking an employee will remove this pattern from them.</p>
+                    <form action="/schedules/patterns/{{ $pattern->id }}/assign" method="POST">
+                        @csrf
+                        <div style="max-height: 300px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                            @foreach($employees as $emp)
+                                <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; color: white;">
+                                    <input type="checkbox" name="user_ids[]" value="{{ $emp->id }}" {{ $emp->work_pattern_id == $pattern->id ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: var(--accent);">
+                                    {{ $emp->name }} <span style="color: var(--text-muted); font-size: 0.85rem;">(PIN: {{ $emp->user_id }})</span>
+                                </label>
+                            @endforeach
+                            @if($employees->isEmpty())
+                                <div style="color: var(--text-muted); text-align: center;">No employees found.</div>
+                            @endif
+                        </div>
+
+                        <div style="display:flex; justify-content:flex-end; gap:10px;">
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('assignPatternModal{{ $pattern->id }}').style.display='none'">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Assignments</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             @empty
             <div style="text-align:center; padding: 20px; color: var(--text-muted);">No work patterns defined.</div>
+            @endforelse
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 20px;">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title"><i class="fas fa-calendar-days text-blue-400"></i> Monthly Work Patterns (31 Days)</div>
+            <button class="btn btn-primary" onclick="document.getElementById('addMonthlyPatternModal').style.display='flex'">
+                <i class="fas fa-plus"></i> Add Monthly Pattern
+            </button>
+        </div>
+        
+        <div class="grid-container">
+            @forelse($monthlyPatterns as $pattern)
+            <div class="list-item">
+                <div class="item-info">
+                    <h4>{{ $pattern->name }}</h4>
+                    <p>{{ $pattern->days->count() }} days configured</p>
+                </div>
+                <div style="display:flex; gap: 5px;">
+                    <button class="action-btn btn-blue" onclick="document.getElementById('configMonthlyPatternModal{{ $pattern->id }}').style.display='flex'" title="Configure 31 Days">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="action-btn btn-yellow" onclick="document.getElementById('assignMonthlyPatternModal{{ $pattern->id }}').style.display='flex'" title="Assign to Users">
+                        <i class="fas fa-users"></i>
+                    </button>
+                    <button class="action-btn btn-green" onclick="openEditMonthlyPattern({{ $pattern->id }}, '{{ addslashes($pattern->name) }}')" title="Edit Pattern Name">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <form action="/schedules/monthly-patterns/{{ $pattern->id }}/delete" method="POST" onsubmit="return confirm('Delete this monthly pattern?');" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="action-btn btn-red" title="Delete"><i class="fas fa-trash"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Configure 31 Days Modal -->
+            <div id="configMonthlyPatternModal{{ $pattern->id }}" class="modal-overlay">
+                <div class="modal-content" style="width: 800px;">
+                    <h3><i class="fas fa-cog text-blue-400"></i> Configure: {{ $pattern->name }} (31 Days)</h3>
+                    <form action="/schedules/monthly-patterns/{{ $pattern->id }}/days" method="POST">
+                        @csrf
+                        <div style="max-height: 400px; overflow-y: auto; padding-right: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                            @for($i = 1; $i <= 31; $i++)
+                                @php
+                                    $currentShift = $pattern->days->where('day_of_month', $i)->first()?->shift_id;
+                                @endphp
+                                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
+                                    <label style="color:white; font-size: 0.85rem; margin-bottom: 5px; display: block;">Day {{ $i }}</label>
+                                    <select name="days[{{ $i }}]" style="width: 100%; padding: 5px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.8rem;">
+                                        <option value="" style="color:#ef4444;">-- OFF DAY --</option>
+                                        @foreach($shifts as $s)
+                                            <option value="{{ $s->id }}" {{ $currentShift == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endfor
+                        </div>
+
+                        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top: 20px;">
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('configMonthlyPatternModal{{ $pattern->id }}').style.display='none'">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Configuration</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Assign Monthly Pattern Modal -->
+            <div id="assignMonthlyPatternModal{{ $pattern->id }}" class="modal-overlay">
+                <div class="modal-content" style="width: 500px;">
+                    <h3><i class="fas fa-users text-blue-400"></i> Assign: {{ $pattern->name }}</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Select the employees who should follow this monthly pattern.</p>
+                    <form action="/schedules/monthly-patterns/{{ $pattern->id }}/assign" method="POST">
+                        @csrf
+                        <div style="max-height: 300px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                            @foreach($employees as $emp)
+                                <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; color: white;">
+                                    <input type="checkbox" name="user_ids[]" value="{{ $emp->id }}" {{ $emp->monthly_pattern_id == $pattern->id ? 'checked' : '' }} style="width: 18px; height: 18px; accent-color: var(--accent);">
+                                    {{ $emp->name }} <span style="color: var(--text-muted); font-size: 0.85rem;">(PIN: {{ $emp->user_id }})</span>
+                                </label>
+                            @endforeach
+                            @if($employees->isEmpty())
+                                <div style="color: var(--text-muted); text-align: center;">No employees found.</div>
+                            @endif
+                        </div>
+
+                        <div style="display:flex; justify-content:flex-end; gap:10px;">
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('assignMonthlyPatternModal{{ $pattern->id }}').style.display='none'">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Assignments</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            @empty
+            <div style="text-align:center; padding: 20px; color: var(--text-muted); grid-column: 1 / -1;">No monthly patterns defined.</div>
             @endforelse
         </div>
     </div>
@@ -272,6 +400,42 @@
     </div>
 </div>
 
+<!-- Add Monthly Pattern Modal -->
+<div id="addMonthlyPatternModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3><i class="fas fa-plus text-blue-400"></i> Add Monthly Pattern</h3>
+        <form action="/schedules/monthly-patterns" method="POST">
+            @csrf
+            <div class="form-group">
+                <label>Pattern Name (e.g. Ramadan Schedule)</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('addMonthlyPatternModal').style.display='none'">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Monthly Pattern</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Monthly Pattern Modal -->
+<div id="editMonthlyPatternModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3><i class="fas fa-edit text-blue-400"></i> Rename Monthly Pattern</h3>
+        <form id="editMonthlyPatternForm" method="POST">
+            @csrf
+            <div class="form-group">
+                <label>Pattern Name</label>
+                <input type="text" id="edit_monthly_pattern_name" name="name" class="form-control" required>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('editMonthlyPatternModal').style.display='none'">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Pattern</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -288,6 +452,12 @@
         document.getElementById('editPatternForm').action = '/schedules/patterns/' + id;
         document.getElementById('edit_pattern_name').value = name;
         document.getElementById('editPatternModal').style.display = 'flex';
+    }
+
+    function openEditMonthlyPattern(id, name) {
+        document.getElementById('editMonthlyPatternForm').action = '/schedules/monthly-patterns/' + id;
+        document.getElementById('edit_monthly_pattern_name').value = name;
+        document.getElementById('editMonthlyPatternModal').style.display = 'flex';
     }
 </script>
 @endpush

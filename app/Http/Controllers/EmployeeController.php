@@ -322,6 +322,9 @@ class EmployeeController extends Controller
     {
         $user = User::findOrFail($id);
         $user->work_pattern_id = $request->input('work_pattern_id') ?: null;
+        if ($user->work_pattern_id) {
+            $user->monthly_pattern_id = null;
+        }
         $user->save();
         
         return redirect('/employees')->with('success', 'Work pattern updated successfully.');

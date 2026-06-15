@@ -23,7 +23,7 @@
         .fill-purple { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
         .empty-state { text-align: center; padding: 60px 20px; background: var(--card-bg); border-radius: 16px; border: 1px dashed var(--border-color); }
         .empty-state i { font-size: 4rem; color: var(--text-muted); margin-bottom: 20px; opacity: 0.5; }
-</style>
+</style>    
 @endpush
 @extends('layouts.app')
 @section('content')
@@ -81,22 +81,40 @@
 
                 <div class="info-grid">
                     <div class="info-item">
-                        <span class="info-label"><i class="fas fa-network-wired"></i> MAC Address</span>
-                        <span class="info-value" style="font-family: monospace;">{{ $mac }}</span>
+                        <span class="info-label"><i class="fas fa-network-wired text-purple-400"></i> MAC Address</span>
+                        <span class="info-value" style="font-family: monospace;">{{ $meta['MAC'] ?? 'Unknown' }}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label"><i class="fas fa-microchip"></i> Firmware</span>
-                        <span class="info-value">{{ $fwVersion }}</span>
+                        <span class="info-label"><i class="fas fa-microchip text-yellow-400"></i> Firmware</span>
+                        <span class="info-value">{{ $meta['FWVersion'] ?? 'Unknown' }}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label"><i class="fas fa-wifi"></i> IP Address</span>
-                        <span class="info-value">{{ $ip }}</span>
+                        <span class="info-label"><i class="fas fa-server text-green-400"></i> IP Address</span>
+                        <span class="info-value" style="font-family: monospace;">{{ $meta['IPAddress'] ?? 'Unknown' }}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label"><i class="fas fa-language"></i> Language Code</span>
-                        <span class="info-value">{{ $meta['Language'] ?? 'N/A' }}</span>
+                        <span class="info-label"><i class="fas fa-language text-pink-400"></i> Language Code</span>
+                        <span class="info-value">{{ $meta['Language'] ?? 'Unknown' }}</span>
                     </div>
                 </div>
+
+                @php
+                // Progress calculations with fallback for strange device metadata
+                $users = intval($meta['UserCount'] ?? 0);
+                $rawMaxUsers = intval($meta['MaxUserCount'] ?? 3000);
+                $maxUsers = $rawMaxUsers < 100 ? $rawMaxUsers * 100 : $rawMaxUsers; // Fix for devices sending '30' instead of '3000'
+                $userPct = min(100, ($maxUsers > 0) ? ($users / $maxUsers) * 100 : 0);
+
+                $logs = intval($meta['TransactionCount'] ?? 0);
+                $rawMaxLogs = intval($meta['MaxAttLogCount'] ?? 150000);
+                $maxLogs = $rawMaxLogs < 100 ? $rawMaxLogs * 10000 : $rawMaxLogs; // Fix for devices sending '15' instead of '150000'
+                $logPct = min(100, ($maxLogs > 0) ? ($logs / $maxLogs) * 100 : 0);
+
+                $fingers = intval($meta['FPCount'] ?? 0);
+                $rawMaxFingers = intval($meta['MaxFingerCount'] ?? 3000);
+                $maxFingers = $rawMaxFingers < 100 ? $rawMaxFingers * 100 : $rawMaxFingers; // Fix for devices sending '30' instead of '3000'
+                $fingerPct = min(100, ($maxFingers > 0) ? ($fingers / $maxFingers) * 100 : 0);
+                @endphp
 
                 <div class="progress-section">
                     <div class="progress-header">

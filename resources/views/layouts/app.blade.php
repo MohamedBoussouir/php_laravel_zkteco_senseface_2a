@@ -88,6 +88,9 @@
             flex-grow: 1;
             margin-left: 260px;
             padding: 40px;
+            width: calc(100% - 260px);
+            max-width: calc(100vw - 260px);
+            box-sizing: border-box;
             background-image: 
                 radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
@@ -120,8 +123,23 @@
             <a href="/schedules" class="nav-item {{ request()->is('schedules*') ? 'active' : '' }}">
                 <i class="fas fa-calendar-alt"></i> Schedules & Shifts
             </a>
-            <a href="#" class="nav-item">
+            <a href="/roster" class="nav-item {{ request()->is('roster*') ? 'active' : '' }}">
+                <i class="fas fa-calendar-days"></i> Monthly Roster
+            </a>
+            <a href="/attendance" class="nav-item {{ request()->is('attendance*') ? 'active' : '' }}">
                 <i class="fas fa-list-check"></i> Attendance
+            </a>
+            
+            <div style="margin-top: 20px; margin-bottom: 10px; padding-left: 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 1px;">
+                Reports
+            </div>
+            <a href="/reports/absence" class="nav-item {{ request()->is('reports/absence*') ? 'active' : '' }}">
+                <i class="fas fa-user-xmark"></i> Absence Report
+            <div style="margin-top: 20px; margin-bottom: 10px; padding-left: 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 1px;">
+                System
+            </div>
+            <a href="/settings" class="nav-item {{ request()->is('settings*') ? 'active' : '' }}">
+                <i class="fas fa-cog"></i> Settings
             </a>
         </div>
     </div>

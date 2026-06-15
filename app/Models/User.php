@@ -34,6 +34,11 @@ class User extends Authenticatable
         return $this->belongsTo(WorkPattern::class);
     }
 
+    public function monthlyPattern()
+    {
+        return $this->belongsTo(MonthlyPattern::class);
+    }
+
     public function device()
     {
         return $this->belongsTo(Device::class);

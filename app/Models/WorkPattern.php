@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class WorkPattern extends Model
 {
     protected $guarded = [];
-    //
+    
+    public function days()
+    {
+        return $this->hasMany(WorkPatternDay::class, 'pattern_id');
+    }
 }
-

@@ -49,6 +49,10 @@ Route::post('/employees/{id}/work-pattern', [EmployeeController::class, 'updateW
 
 // Schedules and Shifts Management
 Route::get('/schedules', [ScheduleController::class, 'index']);
+Route::get('/roster', [ScheduleController::class, 'roster']);
+Route::post('/roster/generate', [ScheduleController::class, 'generateRoster']);
+Route::post('/roster/update-day', [ScheduleController::class, 'updateRosterDay']);
+
 Route::post('/schedules/shifts', [ScheduleController::class, 'storeShift']);
 Route::post('/schedules/shifts/{id}', [ScheduleController::class, 'updateShift']);
 Route::post('/schedules/shifts/{id}/delete', [ScheduleController::class, 'destroyShift']);
@@ -57,3 +61,25 @@ Route::post('/schedules/patterns', [ScheduleController::class, 'storePattern']);
 Route::post('/schedules/patterns/{id}', [ScheduleController::class, 'updatePattern']);
 Route::post('/schedules/patterns/{id}/delete', [ScheduleController::class, 'destroyPattern']);
 Route::post('/schedules/patterns/{id}/days', [ScheduleController::class, 'updatePatternDays']);
+Route::post('/schedules/patterns/{id}/assign', [ScheduleController::class, 'assignPattern']);
+
+Route::post('/schedules/monthly-patterns', [ScheduleController::class, 'storeMonthlyPattern']);
+Route::post('/schedules/monthly-patterns/{id}', [ScheduleController::class, 'updateMonthlyPattern']);
+Route::post('/schedules/monthly-patterns/{id}/delete', [ScheduleController::class, 'destroyMonthlyPattern']);
+Route::post('/schedules/monthly-patterns/{id}/days', [ScheduleController::class, 'updateMonthlyPatternDays']);
+Route::post('/schedules/monthly-patterns/{id}/assign', [ScheduleController::class, 'assignMonthlyPattern']);
+
+// Attendance
+use App\Http\Controllers\AttendanceController;
+Route::get('/attendance', [AttendanceController::class, 'index']);
+Route::post('/attendance/fetch', [AttendanceController::class, 'fetch']);
+
+// Reports
+use App\Http\Controllers\ReportController;
+Route::get('/reports/absence', [ReportController::class, 'absence']);
+
+// Settings
+use App\Http\Controllers\SettingsController;
+Route::get('/settings', [SettingsController::class, 'index']);
+Route::post('/settings/time', [SettingsController::class, 'updateTime']);
+Route::post('/settings/logging-mode', [SettingsController::class, 'updateLoggingMode']);
