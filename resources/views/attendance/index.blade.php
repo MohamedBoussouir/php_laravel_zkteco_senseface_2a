@@ -170,20 +170,30 @@
                             <div style="color: var(--text-muted); font-size: 0.85rem;">{{ date('H:i:s', strtotime($att->timestamp)) }}</div>
                         </td>
                         <td>
-                            @if($att->status == 0 || $att->status == '0' || $att->status == 'Check-In')
-                                <span class="badge badge-checkin"><i class="fas fa-arrow-right-to-bracket"></i> Check-In (Arrivée)</span>
-                            @elseif($att->status == 1 || $att->status == '1' || $att->status == 'Check-Out')
-                                <span class="badge badge-checkout"><i class="fas fa-arrow-right-from-bracket"></i> Check-Out (Départ)</span>
-                            @elseif($att->status == 2 || $att->status == '2')
-                                <span class="badge badge-break"><i class="fas fa-mug-hot"></i> Break-Out</span>
-                            @elseif($att->status == 3 || $att->status == '3')
-                                <span class="badge badge-break"><i class="fas fa-mug-hot"></i> Break-In</span>
-                            @elseif($att->status == 4 || $att->status == '4')
-                                <span class="badge badge-overtime"><i class="fas fa-clock"></i> OT-In</span>
-                            @elseif($att->status == 5 || $att->status == '5')
-                                <span class="badge badge-overtime"><i class="fas fa-clock"></i> OT-Out</span>
+                            @if(isset($att->calculated_status))
+                                @if($att->calculated_status == 'Check-In')
+                                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 5px 10px; border-radius: 6px;"><i class="fas fa-arrow-right-to-bracket"></i> Check-In (Arrivée)</span>
+                                @elseif($att->calculated_status == 'Check-Out')
+                                    <span class="badge" style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); padding: 5px 10px; border-radius: 6px;"><i class="fas fa-arrow-right-from-bracket"></i> Check-Out (Départ)</span>
+                                @else
+                                    <span class="badge" style="background: rgba(100, 116, 139, 0.15); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); padding: 5px 10px; border-radius: 6px;"><i class="fas fa-clock"></i> Intermediate Log</span>
+                                @endif
                             @else
-                                <span class="badge badge-unknown">{{ $att->status }}</span>
+                                @if($att->status == 0 || $att->status == '0' || $att->status == 'Check-In')
+                                    <span class="badge badge-checkin"><i class="fas fa-arrow-right-to-bracket"></i> Check-In (Arrivée)</span>
+                                @elseif($att->status == 1 || $att->status == '1' || $att->status == 'Check-Out')
+                                    <span class="badge badge-checkout"><i class="fas fa-arrow-right-from-bracket"></i> Check-Out (Départ)</span>
+                                @elseif($att->status == 2 || $att->status == '2')
+                                    <span class="badge badge-break"><i class="fas fa-mug-hot"></i> Break-Out</span>
+                                @elseif($att->status == 3 || $att->status == '3')
+                                    <span class="badge badge-break"><i class="fas fa-mug-hot"></i> Break-In</span>
+                                @elseif($att->status == 4 || $att->status == '4')
+                                    <span class="badge badge-overtime"><i class="fas fa-clock"></i> OT-In</span>
+                                @elseif($att->status == 5 || $att->status == '5')
+                                    <span class="badge badge-overtime"><i class="fas fa-clock"></i> OT-Out</span>
+                                @else
+                                    <span class="badge badge-unknown">{{ $att->status }}</span>
+                                @endif
                             @endif
                         </td>
                         <td style="text-align: right;">

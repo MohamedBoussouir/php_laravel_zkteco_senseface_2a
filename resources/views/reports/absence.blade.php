@@ -131,8 +131,24 @@
             <input type="time" name="end_time" class="form-control" value="{{ $defaultEndTime }}">
         </div>
 
-        <div>
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;"><i class="fas fa-search"></i> Generate Report</button>
+        <div style="display: flex; gap: 10px; align-items: flex-end;">
+            <button type="submit" class="btn btn-primary" style="flex: 1; padding: 10px;">
+                <i class="fas fa-filter"></i> Apply Filters
+            </button>
+            
+            <div style="position: relative; flex: 1;">
+                <button type="button" class="btn" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="document.getElementById('exportMenu').classList.toggle('show')">
+                    <i class="fas fa-download"></i> Export <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>
+                </button>
+                <div id="exportMenu" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; margin-top: 5px; z-index: 100; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);">
+                    <a href="{{ route('reports.absence.pdf', request()->all()) }}" target="_blank" style="display: block; padding: 10px 15px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <i class="fas fa-file-pdf" style="color: #f43f5e; width: 20px;"></i> Export PDF
+                    </a>
+                    <a href="{{ route('reports.absence.excel', request()->all()) }}" style="display: block; padding: 10px 15px; color: white; text-decoration: none;">
+                        <i class="fas fa-file-excel" style="color: #10b981; width: 20px;"></i> Export Excel
+                    </a>
+                </div>
+            </div>
         </div>
     </form>
 </div>
@@ -347,5 +363,17 @@ function toggleDetails(index) {
         el.classList.add('active');
     }
 }
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    var menu = document.getElementById('exportMenu');
+    if (menu && menu.classList.contains('show') && !event.target.closest('.dropdown-menu') && !event.target.closest('button[onclick*="exportMenu"]')) {
+        menu.classList.remove('show');
+    }
+});
 </script>
+<style>
+    .dropdown-menu.show { display: block !important; }
+    .dropdown-menu a:hover { background: rgba(255,255,255,0.05) !important; }
+</style>
 @endpush

@@ -76,7 +76,9 @@ Route::post('/attendance/fetch', [AttendanceController::class, 'fetch']);
 
 // Reports
 use App\Http\Controllers\ReportController;
-Route::get('/reports/absence', [ReportController::class, 'absence']);
+Route::get('/reports/absence', [ReportController::class, 'absence'])->name('reports.absence');
+Route::get('/reports/absence/export/pdf', [ReportController::class, 'exportPdf'])->name('reports.absence.pdf');
+Route::get('/reports/absence/export/excel', [ReportController::class, 'exportExcel'])->name('reports.absence.excel');
 
 // Settings
 use App\Http\Controllers\SettingsController;

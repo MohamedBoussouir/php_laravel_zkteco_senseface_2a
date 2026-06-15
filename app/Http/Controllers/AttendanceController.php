@@ -36,6 +36,35 @@ class AttendanceController extends Controller
         $attendances = $query->paginate(50);
         $employees = User::all();
 
+        $calcMode = \App\Models\Setting::where('key', 'calc_mode')->value('value') ?? 'calculated';
+
+        if ($calcMode === 'calculated') {
+            foreach ($attendances as $att) {
+                $date = \Carbon\Carbon::parse($att->timestamp)->format('Y-m-d');
+                
+                // Fetch all logs for this user on this day to properly sort and find first/last
+                $dayLogs = Attendance::where('user_id', $att->user_id)
+                                ->where('timestamp', 'LIKE', $date . '%')
+                                ->get()
+                                ->sortBy(function($log) {
+                                    return \Carbon\Carbon::parse($log->timestamp)->timestamp;
+                                })->values();
+                                
+                if ($dayLogs->count() > 0) {
+                    $firstLog = $dayLogs->first();
+                    $lastLog = $dayLogs->last();
+                    
+                    if ($firstLog->id === $att->id) {
+                        $att->calculated_status = 'Check-In';
+                    } elseif ($lastLog->id === $att->id) {
+                        $att->calculated_status = 'Check-Out';
+                    } else {
+                        $att->calculated_status = 'Intermediate';
+                    }
+                }
+            }
+        }
+
         // Calculate quick stats for the filtered period
         $totalPunches = $query->count();
         

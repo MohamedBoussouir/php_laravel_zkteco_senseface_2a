@@ -43,5 +43,16 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Device::class);
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            // Delete all attendances for this user (user_id here refers to the device PIN)
+            \App\Models\Attendance::where('user_id', $user->user_id)->delete();
+            
+            // Delete all schedules for this user
+            \App\Models\Schedule::where('user_id', $user->user_id)->delete();
+        });
+    }
 }
 

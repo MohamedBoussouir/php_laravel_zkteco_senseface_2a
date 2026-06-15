@@ -12,7 +12,7 @@ use Carbon\CarbonPeriod;
 
 class ReportController extends Controller
 {
-    public function absence(Request $request)
+    private function getReportData(Request $request)
     {
         $mode = $request->input('mode', 'day');
         $date = $request->input('date', date('Y-m-d'));
@@ -60,7 +60,11 @@ class ReportController extends Controller
         $totalWorkedHours = 0;
 
         foreach ($employees as $employee) {
-            $userLogs = $logs->where('user_id', $employee->user_id)->values();
+            $userLogs = $logs->where('user_id', $employee->user_id)
+                ->sortBy(function($log) {
+                    return \Carbon\Carbon::parse($log->timestamp)->timestamp;
+                })->values();
+                
             $userSchedules = $schedules->where('user_id', $employee->user_id)->values();
 
             $dailyRecords = [];
@@ -286,7 +290,7 @@ class ReportController extends Controller
                         $first = $firstLog->timestamp;
                         $last = $lastLog->timestamp;
 
-                        $diffMs = Carbon::parse($last)->diffInSeconds(Carbon::parse($first));
+                        $diffMs = abs(Carbon::parse($last)->diffInSeconds(Carbon::parse($first)));
                         $hoursWorked = round($diffMs / 3600, 2);
                         $empTotalWorkedHrs += $hoursWorked;
                         $totalWorkedHours += $hoursWorked;
@@ -298,8 +302,9 @@ class ReportController extends Controller
                         $delayStr = '--';
                         $status = 'On Time';
                         
-                        if ($firstPunchDate->gt($expectedStartDate)) {
-                            $delayVal = (int) abs($firstPunchDate->diffInMinutes($expectedStartDate));
+                        $actualDelayMins = (int) abs($firstPunchDate->diffInMinutes($expectedStartDate));
+                        if ($firstPunchDate->gt($expectedStartDate) && $actualDelayMins > 0) {
+                            $delayVal = $actualDelayMins;
                             $delayStr = '+' . $delayVal . ' mins';
                             $status = 'Late';
                             $empLateDays++;
@@ -359,9 +364,30 @@ class ReportController extends Controller
 
         $attendanceRate = $totalWorkingDays > 0 ? round(($totalPresentDays / $totalWorkingDays) * 100, 1) : 0;
 
-        return view('reports.absence', compact(
+        return compact(
             'reportData', 'mode', 'date', 'month', 'year', 'startDateParam', 'endDateParam', 'defaultStartTime', 'defaultEndTime',
             'totalWorkingDays', 'totalPresentDays', 'totalAbsentDays', 'totalLateDays', 'totalDelayMinutes', 'totalWorkedHours', 'attendanceRate'
-        ));
+        );
+    }
+
+    public function absence(Request $request)
+    {
+        $data = $this->getReportData($request);
+        return view('reports.absence', $data);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $data = $this->getReportData($request);
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.pdf', $data);
+        // Using landscape orientation for better table fit
+        $pdf->setPaper('A4', 'landscape');
+        return $pdf->download('Attendance_Lateness_Report.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $data = $this->getReportData($request);
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\AttendanceReportExport($data), 'Attendance_Lateness_Report.xlsx');
     }
 }
