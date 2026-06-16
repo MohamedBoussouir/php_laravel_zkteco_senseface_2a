@@ -44,6 +44,65 @@
     .btn-text { padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-size: 0.9rem; }
     .btn-primary { background: var(--accent); color: white; }
     .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    /* Pagination Styles - Connected Block Style */
+    nav { display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 20px; }
+    
+    /* Hide Laravel's mobile pagination and 'Showing...' text */
+    nav > div:first-child, nav p, nav .text-sm, nav > div > div:first-child { display: none !important; }
+    
+    /* Show only the desktop pagination container */
+    nav > div:last-child { display: flex; justify-content: center; width: 100%; }
+    nav > div > div:last-child { display: flex; justify-content: center; width: 100%; }
+    
+    .pagination, nav span.relative.z-0.inline-flex { 
+        display: inline-flex; list-style: none; padding: 0; margin: 0; gap: 0; 
+        background: transparent; 
+        border-radius: 6px; 
+        border: 1px solid var(--border-color); 
+        overflow: hidden;
+    }
+    
+    .pagination li, nav span.relative.z-0.inline-flex > span, nav span.relative.z-0.inline-flex > a { 
+        display: inline-flex; 
+        border-right: 1px solid var(--border-color);
+    }
+    
+    /* Remove right border from last item */
+    .pagination li:last-child, nav span.relative.z-0.inline-flex > *:last-child {
+        border-right: none;
+    }
+    
+    .pagination li a, .pagination li span, nav span.relative.z-0.inline-flex > span > span, nav span.relative.z-0.inline-flex > a { 
+        padding: 8px 16px; 
+        background: rgba(255, 255, 255, 0.03); 
+        color: #cbd5e1; 
+        text-decoration: none; 
+        font-size: 0.95rem; 
+        font-weight: 500; 
+        transition: background 0.2s; 
+        display: flex; align-items: center; justify-content: center; min-width: 40px; 
+        border: none; border-radius: 0;
+    }
+    
+    .pagination li a:hover, nav span.relative.z-0.inline-flex > a:hover { 
+        background: rgba(255, 255, 255, 0.08); 
+        color: white; 
+        text-decoration: none; 
+    }
+    
+    .pagination li.active span, nav span.relative.z-0.inline-flex > span[aria-current="page"] > span { 
+        background: #3b82f6; 
+        color: white; 
+        border: none;
+        font-weight: bold;
+    }
+    
+    .pagination li.disabled span, nav span.relative.z-0.inline-flex > span[aria-disabled="true"] > span { 
+        background: rgba(0, 0, 0, 0.2);
+        opacity: 0.5; 
+        cursor: not-allowed; 
+    }
 </style>
 @endpush
 
@@ -56,6 +115,7 @@
             @csrf
             <button type="submit" class="btn-text" style="background: rgba(16, 185, 129, 0.2); color: #10b981;"><i class="fas fa-download"></i> Fetch from Device</button>
         </form>
+        <a href="/employees/archived" class="btn-text" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);"><i class="fas fa-trash-restore"></i> Archived Employees</a>
         <a href="/employees/create" class="btn-text btn-primary"><i class="fas fa-user-plus"></i> Add Employee</a>
     </div>
 </div>
@@ -371,6 +431,10 @@
         <div>No employees found. Click "Add Employee" to create one.</div>
     </div>
     @endforelse
+</div>
+
+<div style="margin-top: 20px; display: flex; justify-content: center;">
+    {{ $employees->links('pagination::bootstrap-5') }}
 </div>
 
 @endsection

@@ -121,7 +121,7 @@ class SettingsController extends Controller
                 DeviceCommand::create([
                     'device_id' => $device->id,
                     'command' => $command,
-                ]);
+                ]); 
             }
         } else {
             DeviceCommand::where('device_id', $deviceId)

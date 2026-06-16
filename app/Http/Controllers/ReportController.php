@@ -38,7 +38,14 @@ class ReportController extends Controller
             $endDate = $endDateParam;
         }
 
-        $employees = User::with(['workPattern.days', 'monthlyPattern.days'])->get();
+        $employeeId = $request->input('employee_id');
+
+        $employeesQuery = User::with(['workPattern.days', 'monthlyPattern.days']);
+        if ($employeeId) {
+            $employeesQuery->where('user_id', $employeeId);
+        }
+        $employees = $employeesQuery->get();
+        $allEmployees = User::select('user_id', 'name')->orderBy('name')->get();
         $schedules = Schedule::whereBetween('date', [$startDate, $endDate])->get();
         $shifts = Shift::all();
         
@@ -366,7 +373,8 @@ class ReportController extends Controller
 
         return compact(
             'reportData', 'mode', 'date', 'month', 'year', 'startDateParam', 'endDateParam', 'defaultStartTime', 'defaultEndTime',
-            'totalWorkingDays', 'totalPresentDays', 'totalAbsentDays', 'totalLateDays', 'totalDelayMinutes', 'totalWorkedHours', 'attendanceRate'
+            'totalWorkingDays', 'totalPresentDays', 'totalAbsentDays', 'totalLateDays', 'totalDelayMinutes', 'totalWorkedHours', 'attendanceRate',
+            'allEmployees', 'employeeId'
         );
     }
 

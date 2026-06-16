@@ -20,10 +20,13 @@ Route::post('/devices/approve', [DashboardController::class, 'approveDevice']);
 Route::get('/employees', [DashboardController::class, 'employeesIndex']);
 
 Route::get('/employees/create', [EmployeeController::class, 'create']);
+Route::get('/employees/archived', [DashboardController::class, 'archivedEmployeesIndex']);
 Route::post('/employees', [EmployeeController::class, 'store']);
 Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit']);
 Route::post('/employees/{id}/update', [EmployeeController::class, 'update']);
 Route::post('/employees/{id}/delete', [EmployeeController::class, 'destroy']);
+Route::post('/employees/{id}/restore', [EmployeeController::class, 'restore']);
+Route::post('/employees/{id}/force-delete', [EmployeeController::class, 'forceDelete']);
 Route::post('/employees/{id}/delete-fingerprint', [EmployeeController::class, 'deleteFingerprint']);
 
 Route::get('/iclock/getrequest', [DeviceController::class, 'getRequests']);

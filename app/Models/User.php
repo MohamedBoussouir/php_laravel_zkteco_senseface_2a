@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $guarded = [];
 
@@ -46,13 +47,7 @@ class User extends Authenticatable
 
     protected static function booted()
     {
-        static::deleting(function ($user) {
-            // Delete all attendances for this user (user_id here refers to the device PIN)
-            \App\Models\Attendance::where('user_id', $user->user_id)->delete();
-            
-            // Delete all schedules for this user
-            \App\Models\Schedule::where('user_id', $user->user_id)->delete();
-        });
+        // Removed static::deleting so that attendance and schedules are kept on soft delete
     }
 }
 

@@ -104,6 +104,64 @@
     .badge-break { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
     .badge-overtime { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
     .badge-unknown { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); border: 1px solid var(--border-color); }
+    /* Pagination Styles - Connected Block Style */
+    nav { display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 20px; }
+    
+    /* Hide Laravel's mobile pagination and 'Showing...' text */
+    nav > div:first-child, nav p, nav .text-sm, nav > div > div:first-child { display: none !important; }
+    
+    /* Show only the desktop pagination container */
+    nav > div:last-child { display: flex; justify-content: center; width: 100%; }
+    nav > div > div:last-child { display: flex; justify-content: center; width: 100%; }
+    
+    .pagination, nav span.relative.z-0.inline-flex { 
+        display: inline-flex; list-style: none; padding: 0; margin: 0; gap: 0; 
+        background: transparent; 
+        border-radius: 6px; 
+        border: 1px solid var(--border-color); 
+        overflow: hidden;
+    }
+    
+    .pagination li, nav span.relative.z-0.inline-flex > span, nav span.relative.z-0.inline-flex > a { 
+        display: inline-flex; 
+        border-right: 1px solid var(--border-color);
+    }
+    
+    /* Remove right border from last item */
+    .pagination li:last-child, nav span.relative.z-0.inline-flex > *:last-child {
+        border-right: none;
+    }
+    
+    .pagination li a, .pagination li span, nav span.relative.z-0.inline-flex > span > span, nav span.relative.z-0.inline-flex > a { 
+        padding: 8px 16px; 
+        background: rgba(255, 255, 255, 0.03); 
+        color: #cbd5e1; 
+        text-decoration: none; 
+        font-size: 0.95rem; 
+        font-weight: 500; 
+        transition: background 0.2s; 
+        display: flex; align-items: center; justify-content: center; min-width: 40px; 
+        border: none; border-radius: 0;
+    }
+    
+    .pagination li a:hover, nav span.relative.z-0.inline-flex > a:hover { 
+        background: rgba(255, 255, 255, 0.08); 
+        color: white; 
+        text-decoration: none; 
+    }
+    
+    .pagination li.active span, nav span.relative.z-0.inline-flex > span[aria-current="page"] > span { 
+        background: #3b82f6; 
+        color: white; 
+        border: none;
+        font-weight: bold;
+    }
+    
+    .pagination li.disabled span, nav span.relative.z-0.inline-flex > span[aria-disabled="true"] > span { 
+        background: rgba(0, 0, 0, 0.2);
+        opacity: 0.5; 
+        cursor: not-allowed; 
+    }
 </style>
 @endpush
 
@@ -213,14 +271,7 @@
     </div>
     
     @if($attendances->hasPages())
-        <div style="padding: 15px 0 0 0; display: flex; justify-content: space-between; align-items: center;">
-            <div style="font-size: 0.85rem; color: var(--text-muted);">
-                Showing {{ $attendances->firstItem() }} to {{ $attendances->lastItem() }} of {{ $attendances->total() }} entries
-            </div>
-            <div>
-                {{ $attendances->appends(request()->query())->links('pagination::bootstrap-4') }}
-            </div>
-        </div>
+        {{ $attendances->appends(request()->query())->links('pagination::bootstrap-5') }}
     @endif
 </div>
 

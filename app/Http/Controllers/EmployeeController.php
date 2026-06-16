@@ -20,7 +20,13 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|numeric',
+            'user_id' => [
+                'required',
+                'numeric',
+                \Illuminate\Validation\Rule::unique('users')->where(function ($query) use ($request) {
+                    return $query->where('device_id', $request->device_id)->whereNull('deleted_at');
+                })
+            ],
             'name' => 'required|string|max:255',
             'role' => 'required|integer',
             'device_id' => 'required|exists:devices,id',
@@ -55,15 +61,22 @@ class EmployeeController extends Controller
     // تحديث الموظف
     public function update(Request $request, $id)
     {
+        $user = User::findOrFail($id);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'role' => 'required|integer',
-            'device_id' => 'required|exists:devices,id',
+            'device_id' => [
+                'required',
+                'exists:devices,id',
+                \Illuminate\Validation\Rule::unique('users')->where(function ($query) use ($user) {
+                    return $query->where('user_id', $user->user_id)->whereNull('deleted_at');
+                })->ignore($user->id)
+            ],
             'password' => 'nullable|string',
             'card_number' => 'nullable|string'
         ]);
 
-        $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->role = $request->role;
         $user->device_id = $request->device_id;
@@ -328,6 +341,43 @@ class EmployeeController extends Controller
         $user->save();
         
         return redirect('/employees')->with('success', 'Work pattern updated successfully.');
+    }
+
+    public function forceDelete($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        
+        // Delete all attendances for this user
+        \App\Models\Attendance::where('user_id', $user->user_id)->delete();
+        
+        // Delete all schedules for this user
+        \App\Models\Schedule::where('user_id', $user->user_id)->delete();
+        
+        $user->forceDelete();
+        
+        return back()->with('success', 'Employee and all related records have been permanently deleted.');
+    }
+
+    public function restore($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->restore();
+        
+        // إرسال أمر لإعادة إنشاء المستخدم في الجهاز
+        $this->syncUserToDevice($user, 'UPDATE');
+        
+        // إذا كان لديه صورة شخصية مسجلة، نعيد إرسالها
+        if ($user->photo) {
+            $binarySize = strlen(base64_decode($user->photo));
+            DB::table('device_commands')->insert([
+                'device_id' => $user->device_id,
+                'command' => "DATA UPDATE USERPIC PIN={$user->user_id}\tSize={$binarySize}\tContent={$user->photo}",
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
+        
+        return back()->with('success', 'Employee restored and synced to device. (Note: Fingerprints may need re-enrollment)');
     }
 }
 

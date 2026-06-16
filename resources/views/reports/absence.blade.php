@@ -131,6 +131,16 @@
             <input type="time" name="end_time" class="form-control" value="{{ $defaultEndTime }}">
         </div>
 
+        <div>
+            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">Employee</label>
+            <select name="employee_id" class="form-select">
+                <option value="">All Employees</option>
+                @foreach($allEmployees as $emp)
+                    <option value="{{ $emp->user_id }}" {{ ($employeeId ?? '') == $emp->user_id ? 'selected' : '' }}>{{ $emp->name }} ({{ $emp->user_id }})</option>
+                @endforeach
+            </select>
+        </div>
+
         <div style="display: flex; gap: 10px; align-items: flex-end;">
             <button type="submit" class="btn btn-primary" style="flex: 1; padding: 10px;">
                 <i class="fas fa-filter"></i> Apply Filters
