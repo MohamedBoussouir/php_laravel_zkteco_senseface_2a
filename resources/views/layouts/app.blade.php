@@ -141,6 +141,17 @@
             <a href="/settings" class="nav-item {{ request()->is('settings*') ? 'active' : '' }}">
                 <i class="fas fa-cog"></i> Settings
             </a>
+
+            @if(Auth::guard('admin')->check())
+                <div style="margin-top: auto; padding: 20px;">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="nav-item" style="width: 100%; border: none; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 8px; cursor: pointer; justify-content: flex-start;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            @endif
         </div>
     </div>
 

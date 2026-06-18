@@ -171,6 +171,12 @@
     <div class="section-header">
         <h2><i class="fas fa-history text-blue-400"></i> Attendance Records</h2>
         <div style="display: flex; gap: 10px;">
+            <form action="/attendance/clear" method="POST" onsubmit="return confirm('Are you sure you want to delete all attendance records from the database and send a CLEAR LOG command to all devices? This action cannot be undone.');" style="margin: 0;">
+                @csrf
+                <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);">
+                    <i class="fas fa-trash-alt"></i> Clear All Logs
+                </button>
+            </form>
             <form action="/attendance/fetch" method="POST" onsubmit="return confirm('This will send a command to all connected devices to fetch new logs. Proceed?');" style="margin: 0;">
                 @csrf
                 <button type="submit" class="btn" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);">
@@ -212,13 +218,14 @@
                     <th>Timestamp</th>
                     <th>Status</th>
                     <th style="text-align: right;">Device ID</th>
+                    <th style="text-align: right; width: 60px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($attendances as $att)
                     <tr>
                         <td>
-                            <div style="font-weight: 600; font-size: 1rem; color: white;">{{ $att->user_name ?? 'Unknown' }}</div>
+                            <div style="font-weight: 600; font-size: 1rem; color: white;">{{ $att->user->name ?? $att->user_name ?? 'Unknown' }}</div>
                         </td>
                         <td>
                             <div style="color: var(--text-muted);">{{ $att->user_id }}</div>
@@ -257,10 +264,18 @@
                         <td style="text-align: right;">
                             <div style="color: var(--text-muted); font-family: monospace;">{{ $att->device_id ?? 'Unknown' }}</div>
                         </td>
+                        <td style="text-align: right;">
+                            <form action="/attendance/{{ $att->id }}/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this record from the database?');" style="margin: 0;">
+                                @csrf
+                                <button type="submit" class="btn" style="padding: 4px 8px; background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); font-size: 0.75rem;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
                             <i class="fas fa-history" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
                             <p>No attendance records found.</p>
                         </td>

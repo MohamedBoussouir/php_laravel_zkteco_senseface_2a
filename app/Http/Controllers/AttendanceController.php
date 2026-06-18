@@ -14,9 +14,9 @@ class AttendanceController extends Controller
         $endDate = $request->input('end_date');
         $search = $request->input('search');
 
-        $query = Attendance::query();
+        $query = Attendance::with('user');
 
-        $query->latest();
+        $query->orderBy('timestamp', 'desc');
 
         if ($startDate) {
             $query->whereRaw("CAST(timestamp AS DATETIME) >= ?", [$startDate . ' 00:00:00']);
@@ -85,9 +85,10 @@ class AttendanceController extends Controller
 
     public function fetch()
     {
+        
         $devices = \App\Models\Device::all();
         $count = 0;
-        
+        // dd($devices);
         foreach ($devices as $device) {
             \App\Models\DeviceCommand::create([
                 'device_id' => $device->id,
@@ -97,5 +98,31 @@ class AttendanceController extends Controller
         }
 
         return back()->with('success', "Fetch command queued for $count devices. Logs will appear automatically as devices process the command.");
+    }
+
+    public function destroy($id)
+    {
+        $attendance = Attendance::findOrFail($id);
+        $attendance->delete();
+        
+        return back()->with('success', 'Attendance record deleted successfully from the database.');
+    }
+
+    public function clearAll()
+    {
+        Attendance::truncate();
+
+        $devices = \App\Models\Device::all();
+        $count = 0;
+        
+        foreach ($devices as $device) {
+            \App\Models\DeviceCommand::create([
+                'device_id' => $device->id,
+                'command' => 'CLEAR LOG', 
+            ]);
+            $count++;
+        }
+
+        return back()->with('success', "All attendance records deleted from database and CLEAR LOG command sent to $count devices.");
     }
 }
