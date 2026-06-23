@@ -28,7 +28,14 @@ class DeviceController extends Controller
             'content' => "Handshake Request"
         ]);
 
-        return response('OK', 200)->header('Content-Type', 'text/plain');
+        $response = response('OK', 200)->header('Content-Type', 'text/plain');
+        
+        $device = \App\Models\Device::where('sn', $sn)->first();
+        if ($device && $device->time_offset != 0) {
+            $response->header('Date', gmdate('D, d M Y H:i:s \G\M\T', time() + $device->time_offset));
+        }
+
+        return $response;
     }
 
     // دالة لتفكيك بيانات الجهاز
@@ -154,14 +161,22 @@ class DeviceController extends Controller
                 }
                 
                 if (isset($userData['pin']) && $device) {
+                    $existingUser = \App\Models\User::where('user_id', $userData['pin'])
+                                                    ->where('device_id', $device->id)
+                                                    ->first();
+                                                    
+                    $name = !empty($userData['name']) ? $userData['name'] : ($existingUser ? $existingUser->name : 'Unknown');
+                    $password = !empty($userData['passwd']) ? $userData['passwd'] : ($existingUser ? $existingUser->password : null);
+                    $card = !empty($userData['card']) ? $userData['card'] : ($existingUser ? $existingUser->card_number : null);
+
                     \App\Models\User::updateOrCreate(
                         ['user_id' => $userData['pin'], 'device_id' => $device->id],
                         [
                             'uid' => $userData['uid'] ?? null,
-                            'name' => $userData['name'] ?? 'Unknown',
+                            'name' => $name,
                             'role' => isset($userData['pri']) ? (int)$userData['pri'] : 0,
-                            'password' => $userData['passwd'] ?? null,
-                            'card_number' => $userData['card'] ?? null
+                            'password' => $password,
+                            'card_number' => $card
                         ]
                     );
                 }
@@ -199,17 +214,23 @@ class DeviceController extends Controller
         }
 
         // هنا يتم حفظ البيانات الفعلية إذا كان الجهاز معتمداً (approved)
-        Payload::create([
-            'device_sn' => $sn,
-            'endpoint'  => "POST /iclock/cdata?table=" . $table,
-            'content'   => $content
-        ]);
+        if (!empty(trim($content))) {
+            Payload::create([
+                'device_sn' => $sn,
+                'endpoint'  => "POST /iclock/cdata?table=" . $table,
+                'content'   => $content
+            ]);
+        }
 
         if ($device) {
             $device->update(['last_seen' => now()->timestamp]);
         }
 
-        return response('OK', 200)->header('Content-Type', 'text/plain');
+        $response = response('OK', 200)->header('Content-Type', 'text/plain');
+        if ($device && $device->time_offset != 0) {
+            $response->header('Date', gmdate('D, d M Y H:i:s \G\M\T', time() + $device->time_offset));
+        }
+        return $response;
     }
 
     // الدالة الثالثة: إرسال الأوامر المعلقة للجهاز (GET)
@@ -219,7 +240,11 @@ class DeviceController extends Controller
         $device = \App\Models\Device::where('sn', $sn)->first();
 
         if (!$device || $device->status === 'pending') {
-            return response('OK', 200)->header('Content-Type', 'text/plain');
+            $response = response('OK', 200)->header('Content-Type', 'text/plain');
+            if ($device && $device->time_offset != 0) {
+                $response->header('Date', gmdate('D, d M Y H:i:s \G\M\T', time() + $device->time_offset));
+            }
+            return $response;
         }
 
         // تحديث آخر ظهور
@@ -233,7 +258,11 @@ class DeviceController extends Controller
             ->get();
 
         if ($commands->isEmpty()) {
-            return response('OK', 200)->header('Content-Type', 'text/plain');
+            $response = response('OK', 200)->header('Content-Type', 'text/plain');
+            if ($device->time_offset != 0) {
+                $response->header('Date', gmdate('D, d M Y H:i:s \G\M\T', time() + $device->time_offset));
+            }
+            return $response;
         }
 
         // تجميع الأوامر وإرسالها
@@ -248,7 +277,11 @@ class DeviceController extends Controller
                 ->update(['synced' => true]);
         }
 
-        return response(trim($responseBody), 200)->header('Content-Type', 'text/plain');
+        $response = response(trim($responseBody), 200)->header('Content-Type', 'text/plain');
+        if ($device->time_offset != 0) {
+            $response->header('Date', gmdate('D, d M Y H:i:s \G\M\T', time() + $device->time_offset));
+        }
+        return $response;
     }
 
     public function deviceCmd(Request $request)
@@ -257,11 +290,13 @@ class DeviceController extends Controller
         $content = $request->getContent();
         $sn = $request->query('SN');
 
-        Payload::create([
-            'device_sn' => $sn ?? 'unknown',
-            'endpoint'  => "POST /iclock/devicecmd",
-            'content'   => $content
-        ]);
+        if (!empty(trim($content))) {
+            Payload::create([
+                'device_sn' => $sn ?? 'unknown',
+                'endpoint'  => "POST /iclock/devicecmd",
+                'content'   => $content
+            ]);
+        }
         
         // النص يكون بصيغة: ID=1&Return=0
         $lines = explode("\n", trim($content));
@@ -276,7 +311,12 @@ class DeviceController extends Controller
             }
         }
 
-        return response('OK', 200)->header('Content-Type', 'text/plain');
+        $response = response('OK', 200)->header('Content-Type', 'text/plain');
+        $device = \App\Models\Device::where('sn', $sn)->first();
+        if ($device && $device->time_offset != 0) {
+            $response->header('Date', gmdate('D, d M Y H:i:s \G\M\T', time() + $device->time_offset));
+        }
+        return $response;
     }
 }
 

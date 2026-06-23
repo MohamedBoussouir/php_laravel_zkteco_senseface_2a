@@ -334,10 +334,19 @@ class EmployeeController extends Controller
     public function updateWorkPattern(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $user->work_pattern_id = $request->input('work_pattern_id') ?: null;
-        if ($user->work_pattern_id) {
+        $patternId = $request->input('pattern_id');
+        
+        if (!$patternId) {
+            $user->work_pattern_id = null;
             $user->monthly_pattern_id = null;
+        } elseif (str_starts_with($patternId, 'weekly_')) {
+            $user->work_pattern_id = str_replace('weekly_', '', $patternId);
+            $user->monthly_pattern_id = null;
+        } elseif (str_starts_with($patternId, 'monthly_')) {
+            $user->monthly_pattern_id = str_replace('monthly_', '', $patternId);
+            $user->work_pattern_id = null;
         }
+
         $user->save();
         
         return redirect('/employees')->with('success', 'Work pattern updated successfully.');
@@ -361,6 +370,11 @@ class EmployeeController extends Controller
     public function restore($id)
     {
         $user = User::withTrashed()->findOrFail($id);
+        
+        // Reset biometric data since we cannot restore them to the device
+        $user->has_face = 0;
+        $user->fingerprints = null;
+        
         $user->restore();
         
         // إرسال أمر لإعادة إنشاء المستخدم في الجهاز
@@ -377,7 +391,7 @@ class EmployeeController extends Controller
             ]);
         }
         
-        return back()->with('success', 'Employee restored and synced to device. (Note: Fingerprints may need re-enrollment)');
+        return back()->with('success', 'Employee restored successfully. (Note: Face and fingerprints were reset and must be re-enrolled on the device)');
     }
 }
 

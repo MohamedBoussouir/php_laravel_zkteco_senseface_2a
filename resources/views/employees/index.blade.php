@@ -103,6 +103,25 @@
         opacity: 0.5; 
         cursor: not-allowed; 
     }
+    
+    .schedule-text {
+        color: #93c5fd; /* blue-300 */
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        background: rgba(59, 130, 246, 0.1); /* light blue bg */
+        border: 1px solid transparent;
+    }
+    .schedule-text:hover {
+        color: #fff;
+        background: rgba(59, 130, 246, 0.5);
+        border-color: rgba(59, 130, 246, 0.8);
+    }
 </style>
 @endpush
 
@@ -153,7 +172,7 @@
                     <span class="badge badge-role-user"><i class="fas fa-user"></i> User</span>
                 @endif
                 <button type="button" class="schedule-text" style="background:transparent; border:none; cursor:pointer;" onclick="document.getElementById('wpForm{{ $employee->id }}').style.display='flex'">
-                    <i class="fas fa-calendar-alt" style="margin-right:4px;"></i> {{ $employee->workPattern ? $employee->workPattern->name : 'Default Schedule' }}
+                    <i class="fas fa-calendar-alt" style="margin-right:4px;"></i> {{ $employee->monthlyPattern ? $employee->monthlyPattern->name : ($employee->workPattern ? $employee->workPattern->name : 'Default Schedule') }}
                 </button>
             </div>
         </div>
@@ -374,11 +393,20 @@
                 @csrf
                 <div style="margin: 20px 0;">
                     <label style="display:block; margin-bottom:5px; color:var(--text-muted); font-size:0.9rem;">Select Work Pattern</label>
-                    <select name="work_pattern_id" style="width:100%; padding: 10px; background: rgba(0,0,0,0.2); color:white; border-radius: 6px; border: 1px solid var(--border-color);">
+                    <select name="pattern_id" style="width:100%; padding: 10px; background: rgba(0,0,0,0.2); color:white; border-radius: 6px; border: 1px solid var(--border-color);">
                         <option value="">Default Schedule</option>
-                        @foreach($workPatterns as $wp)
-                            <option value="{{ $wp->id }}" {{ $employee->work_pattern_id == $wp->id ? 'selected' : '' }}>{{ $wp->name }}</option>
-                        @endforeach
+                        <optgroup label="Weekly Patterns" style="background: var(--sidebar-bg); color: white;">
+                            @foreach($workPatterns as $wp)
+                                <option value="weekly_{{ $wp->id }}" {{ $employee->work_pattern_id == $wp->id ? 'selected' : '' }}>{{ $wp->name }}</option>
+                            @endforeach
+                        </optgroup>
+                        @if(isset($monthlyPatterns) && $monthlyPatterns->count() > 0)
+                        <optgroup label="Monthly Patterns" style="background: var(--sidebar-bg); color: white;">
+                            @foreach($monthlyPatterns as $mp)
+                                <option value="monthly_{{ $mp->id }}" {{ $employee->monthly_pattern_id == $mp->id ? 'selected' : '' }}>{{ $mp->name }}</option>
+                            @endforeach
+                        </optgroup>
+                        @endif
                     </select>
                 </div>
                 <div style="display:flex; justify-content:flex-end; gap:10px;">

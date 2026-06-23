@@ -138,8 +138,11 @@
             <div style="margin-top: 20px; margin-bottom: 10px; padding-left: 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 1px;">
                 System
             </div>
-            <a href="/settings" class="nav-item {{ request()->is('settings*') ? 'active' : '' }}">
+            <a href="/settings" class="nav-item {{ request()->is('settings') ? 'active' : '' }}">
                 <i class="fas fa-cog"></i> Settings
+            </a>
+            <a href="/settings/sip" class="nav-item {{ request()->is('settings/sip*') ? 'active' : '' }}">
+                <i class="fas fa-video"></i> Video Intercom (SIP)
             </a>
 
             @if(Auth::guard('admin')->check())
@@ -159,7 +162,41 @@
         @yield('content')
     </div>
 
+    <!-- SIP Video Intercom Modal -->
+    <script>
+        window.SIP_CONFIG = {
+            uri: "sip:100@192.168.0.107",
+            password: "dashboardpass",
+            wsServer: "ws://192.168.0.107:8088/ws",
+            snapshotUrl: "http://192.168.0.105/cgi-bin/snapshot.cgi"
+        };
+    </script>
+    <div id="sip-call-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--accent); text-align: center; max-width: 400px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+            <div style="width: 80px; height: 80px; background: rgba(59, 130, 246, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; color: var(--accent); font-size: 2rem;">
+                <i class="fas fa-phone-volume fa-shake"></i>
+            </div>
+            <h2 style="color: white; margin-bottom: 10px;">Incoming Intercom Call</h2>
+            <p style="color: var(--text-muted); margin-bottom: 15px;">ZKTeco SenseFace Device</p>
+            <p id="sip-call-timer" style="color: var(--accent); font-weight: bold; font-size: 1.5rem; margin-bottom: 20px; display: none;">00:00</p>
+            
+            <iframe id="sip-remote-iframe" src="http://localhost:8889/zkteco/" allow="autoplay; fullscreen" style="display: none; width: 100%; max-width: 400px; height: 300px; border-radius: 8px; margin-bottom: 15px; border: none; background: #000;"></iframe>
+            
+            <audio id="sip-remote-audio" autoplay></audio>
+            <audio id="sip-ringtone" loop preload="auto" src="https://assets.mixkit.co/active_storage/sfx/2870/2870-preview.mp3"></audio>
+            
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button id="sip-accept-btn" style="padding: 12px 20px; border-radius: 8px; border: none; background: var(--success); color: white; cursor: pointer; font-weight: bold; font-size: 1rem; flex: 1;"><i class="fas fa-phone"></i> Answer</button>
+                <button id="sip-reject-btn" style="padding: 12px 20px; border-radius: 8px; border: none; background: #ef4444; color: white; cursor: pointer; font-weight: bold; font-size: 1rem; flex: 1;"><i class="fas fa-phone-slash"></i> Reject</button>
+                <button id="sip-unlock-btn" style="display: none; padding: 12px 20px; border-radius: 8px; border: none; background: var(--accent); color: white; cursor: pointer; font-weight: bold; font-size: 1rem; flex: 1;"><i class="fas fa-unlock"></i> Open Door</button>
+                <button id="sip-end-btn" style="display: none; padding: 12px 20px; border-radius: 8px; border: none; background: #64748b; color: white; cursor: pointer; font-weight: bold; font-size: 1rem; flex: 1;"><i class="fas fa-phone-slash"></i> End Call</button>
+            </div>
+        </div>
+    </div>
+
     @stack('scripts')
+    <!-- Build app.js -> contains sip-client logic -->
+    @vite(['resources/js/app.js'])
 </body>
 </html>
 

@@ -50,6 +50,10 @@ class SettingsController extends Controller
         if ($deviceId === 'all') {
             $devices = Device::where('status', 'approved')->get();
             foreach ($devices as $device) {
+                // Save the time offset
+                $device->time_offset = $request->sync_type === 'auto' ? 0 : $carbonTime->diffInSeconds(Carbon::now(), false) * -1;
+                $device->save();
+                
                 // Clear any pending time commands to avoid conflicts
                 DeviceCommand::where('device_id', $device->id)
                     ->where('executed', false)
@@ -64,6 +68,13 @@ class SettingsController extends Controller
                 }
             }
         } else {
+            $device = Device::find($deviceId);
+            if ($device) {
+                // Save the time offset
+                $device->time_offset = $request->sync_type === 'auto' ? 0 : $carbonTime->diffInSeconds(Carbon::now(), false) * -1;
+                $device->save();
+            }
+
             // Clear any pending time commands
             DeviceCommand::where('device_id', $deviceId)
                 ->where('executed', false)
@@ -108,14 +119,16 @@ class SettingsController extends Controller
         $imageContent = file_get_contents($image->getRealPath());
         $base64 = base64_encode($imageContent);
 
-        $command = "SET OPTIONS Wallpaper={$base64}";
+        $size = $image->getSize();
+        $extension = $image->getClientOriginalExtension();
+        $command = "DATA UPDATE ADPIC Index=1\tSize={$size}\tExtension={$extension}\tContent={$base64}";
 
         if ($deviceId === 'all') {
             $devices = Device::where('status', 'approved')->get();
             foreach ($devices as $device) {
                 DeviceCommand::where('device_id', $device->id)
                     ->where('executed', false)
-                    ->where('command', 'LIKE', 'SET OPTIONS Wallpaper%')
+                    ->where('command', 'LIKE', 'DATA UPDATE ADPIC%')
                     ->delete();
 
                 DeviceCommand::create([
@@ -126,7 +139,7 @@ class SettingsController extends Controller
         } else {
             DeviceCommand::where('device_id', $deviceId)
                 ->where('executed', false)
-                ->where('command', 'LIKE', 'SET OPTIONS Wallpaper%')
+                ->where('command', 'LIKE', 'DATA UPDATE ADPIC%')
                 ->delete();
 
             DeviceCommand::create([

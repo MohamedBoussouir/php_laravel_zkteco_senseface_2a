@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SipController;
 
 // Auth Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -86,4 +87,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('/settings/time', [SettingsController::class, 'updateTime']);
     Route::post('/settings/logging-mode', [SettingsController::class, 'updateLoggingMode']);
     Route::post('/settings/wallpaper', [SettingsController::class, 'updateWallpaper']);
+    
+    // SIP
+    Route::get('/settings/sip', [SipController::class, 'index']);
 });

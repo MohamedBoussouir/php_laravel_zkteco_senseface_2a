@@ -83,10 +83,10 @@
         </form>
     </div>
 
-    <!-- Device Wallpaper Card -->
+    <!-- Device Screensaver Card -->
     <div class="card" style="background-color: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 25px; margin-bottom: 30px;">
-        <h4 style="margin-bottom: 5px; color: var(--text-main); font-weight: 600;"><i class="fas fa-image"></i> Device Wallpaper</h4>
-        <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem;">Change the background wallpaper on your connected devices. Recommended image size: 1024x600 pixels. Max 2MB.</p>
+        <h4 style="margin-bottom: 5px; color: var(--text-main); font-weight: 600;"><i class="fas fa-image"></i> Device Screensaver (Ad Picture)</h4>
+        <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem;">Upload an image to be used as an advertisement/screensaver when the device is idle. Recommended image size: 1024x600 pixels. Max 2MB.</p>
 
         <form action="/settings/wallpaper" method="POST" enctype="multipart/form-data" id="wallpaper-form">
             @csrf
@@ -115,7 +115,7 @@
             </div>
 
             <button type="submit" id="wallpaper-submit-btn" style="background-color: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;">
-                <i class="fas fa-upload"></i> Upload Wallpaper to Device
+                <i class="fas fa-upload"></i> Upload Screensaver to Device
             </button>
         </form>
     </div>

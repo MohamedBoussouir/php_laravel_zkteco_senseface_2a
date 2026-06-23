@@ -63,8 +63,9 @@ class DashboardController extends Controller
     {
         $employees = \App\Models\User::paginate(20);
         $workPatterns = \App\Models\WorkPattern::all();
+        $monthlyPatterns = \App\Models\MonthlyPattern::all();
         $devices = \App\Models\Device::all();
-        return view('employees.index', compact('employees', 'workPatterns', 'devices'));
+        return view('employees.index', compact('employees', 'workPatterns', 'monthlyPatterns', 'devices'));
     }
 
     // عرض الموظفين المحذوفين (الأرشيف)

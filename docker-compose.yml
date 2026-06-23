@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  asterisk:
+    image: andrius/asterisk:latest
+    container_name: asterisk_pbx
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "8088:8088/tcp"
+      - "8089:8089/tcp"
+      - "10000-10050:10000-10050/udp"
+    volumes:
+      - ./asterisk_config/pjsip.conf:/etc/asterisk/pjsip.conf
+      - ./asterisk_config/extensions.conf:/etc/asterisk/extensions.conf
+      - ./asterisk_config/http.conf:/etc/asterisk/http.conf
+      - ./asterisk_config/rtp.conf:/etc/asterisk/rtp.conf
+    restart: unless-stopped
+
+  mediamtx:
+    image: bluenviron/mediamtx:latest-ffmpeg
+    container_name: mediamtx
+    ports:
+      - "8888:8888" # HLS
+      - "8889:8889" # WebRTC
+      - "8189:8189/udp" # WebRTC UDP
+    environment:
+      - MTX_WEBRTCADDITIONALHOSTS=localhost
+      - MTX_PATHS_ZKTECO_RUNONINIT=ffmpeg -rtsp_transport tcp -i rtsp://192.168.0.105:8554/stream -c:v copy -f rtsp rtsp://localhost:8554/zkteco
+      - MTX_PATHS_ZKTECO_RUNONINITRESTART=yes
+    restart: unless-stopped

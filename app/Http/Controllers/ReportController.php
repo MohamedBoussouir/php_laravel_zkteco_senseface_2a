@@ -276,20 +276,14 @@ class ReportController extends Controller
                         
                         if (!$firstLog || !$lastLog) {
                             // If device mode and missing check-in or check-out, we consider it absent or missing punch
-                            if (!$firstLog) $firstPunchStr = '--';
-                            else $firstPunchStr = Carbon::parse($firstLog->timestamp)->format('H:i');
-                            
-                            if (!$lastLog) $lastPunchStr = '--';
-                            else $lastPunchStr = Carbon::parse($lastLog->timestamp)->format('H:i');
-                            
                             $dailyRecords[] = [
                                 'date' => $currentDate,
-                                'first' => $firstPunchStr,
-                                'last' => $lastPunchStr,
+                                'first' => '--',
+                                'last' => '--',
                                 'worked' => '--',
                                 'delay' => '--',
                                 'expected' => $expectedStart . ' - ' . $expectedEnd . ($shiftName ? " ($shiftName)" : ''),
-                                'status' => 'Absent' // or Invalid Punch
+                                'status' => 'Invalid Punch (Check Mode)'
                             ];
                             continue; // skip the rest of the calculations for this day
                         }
