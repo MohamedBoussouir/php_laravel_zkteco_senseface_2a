@@ -61,8 +61,8 @@
 
 <div class="container">
     <div class="header" style="margin-bottom: 30px;">
-        <h1><i class="fas fa-chart-pie" style="color: var(--accent);"></i> Dashboard</h1>
-        <p>Overview of Human Resources & Hardware</p>
+        <h1><i class="fas fa-chart-pie" style="color: var(--accent);"></i> {{ __('Dashboard') }}</h1>
+        <p>{{ __('Overview of Human Resources & Hardware') }}</p>
     </div>
 
     <!-- KPI Cards -->
@@ -72,7 +72,7 @@
                 <i class="fas fa-users"></i>
             </div>
             <div class="kpi-info">
-                <h3>Total Employees</h3>
+                <h3>{{ __('Total Employees') }}</h3>
                 <div class="value">{{ number_format($totalEmployees) }}</div>
             </div>
         </div>
@@ -82,7 +82,7 @@
                 <i class="fas fa-user-check"></i>
             </div>
             <div class="kpi-info">
-                <h3>Present Today</h3>
+                <h3>{{ __('Present Today') }}</h3>
                 <div class="value">{{ number_format($presentToday) }}</div>
             </div>
         </div>
@@ -92,7 +92,7 @@
                 <i class="fas fa-user-times"></i>
             </div>
             <div class="kpi-info">
-                <h3>Absent Today</h3>
+                <h3>{{ __('Absent Today') }}</h3>
                 <div class="value">{{ number_format($absentToday) }}</div>
             </div>
         </div>
@@ -102,7 +102,7 @@
                 <i class="fas fa-satellite-dish"></i>
             </div>
             <div class="kpi-info">
-                <h3>Connected Devices</h3>
+                <h3>{{ __('Connected Devices') }}</h3>
                 <div class="value">{{ $devices->count() }}</div>
             </div>
         </div>
@@ -114,8 +114,8 @@
         <!-- Left Column: Recent Punches -->
         <div class="section-card">
             <div class="section-header">
-                <h2 class="section-title"><i class="fas fa-clock text-blue-400"></i> Recent Punches</h2>
-                <a href="/attendance" class="btn-primary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 6px; text-decoration: none; color: white;">View All</a>
+                <h2 class="section-title"><i class="fas fa-clock text-blue-400"></i> {{ __('Recent Punches') }}</h2>
+                <a href="/attendance" class="btn-primary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 6px; text-decoration: none; color: white;">{{ __('View All') }}</a>
             </div>
             
             <div class="activity-list">
@@ -129,7 +129,7 @@
                         @endif
                     </div>
                     <div class="activity-details">
-                        <div class="activity-name">{{ $punch->user_name ?? ($punch->user ? $punch->user->name : 'Unknown Employee') }}</div>
+                        <div class="activity-name">{{ $punch->user_name ?? ($punch->user ? $punch->user->name : __('Unknown Employee')) }}</div>
                         <div class="activity-time">
                             <i class="fas fa-history"></i>
                             {{ \Carbon\Carbon::parse($punch->timestamp)->diffForHumans() }} 
@@ -146,8 +146,8 @@
                 @empty
                 <div class="empty-state">
                     <i class="fas fa-mug-hot"></i>
-                    <h3>No Punches Yet</h3>
-                    <p>No one has punched in or out recently.</p>
+                    <h3>{{ __('No Punches Yet') }}</h3>
+                    <p>{{ __('No one has punched in or out recently.') }}</p>
                 </div>
                 @endforelse
             </div>
@@ -156,15 +156,15 @@
         <!-- Right Column: Hardware Status -->
         <div class="section-card">
             <div class="section-header">
-                <h2 class="section-title"><i class="fas fa-server text-purple-400"></i> Hardware Status</h2>
-                <a href="/devices" style="color: var(--text-muted); font-size: 0.9rem; text-decoration: none;"><i class="fas fa-cog"></i> Manage</a>
+                <h2 class="section-title"><i class="fas fa-server text-purple-400"></i> {{ __('Hardware Status') }}</h2>
+                <a href="/devices" style="color: var(--text-muted); font-size: 0.9rem; text-decoration: none;"><i class="fas fa-cog"></i> {{ __('Manage') }}</a>
             </div>
             
             <div class="device-list">
                 @forelse($devices as $device)
                     @php
                         $meta = is_array($device->metadata) ? $device->metadata : json_decode($device->metadata, true);
-                        $deviceName = $meta['DeviceName'] ?? $device->name ?? 'Unknown Device';
+                        $deviceName = $meta['DeviceName'] ?? $device->name ?? __('Unknown Device');
                         $isOnline = $device->last_seen ? \Carbon\Carbon::parse($device->last_seen)->diffInMinutes(now()) < 5 : false;
                         
                         $users = intval($meta['UserCount'] ?? 0);
@@ -179,28 +179,28 @@
                             </div>
                             <div class="status-badge {{ $isOnline ? 'status-online' : 'status-offline' }}">
                                 <div class="status-dot"></div>
-                                {{ $isOnline ? 'Online' : 'Offline' }}
+                                {{ $isOnline ? __('Online') : __('Offline') }}
                             </div>
                         </div>
                         <div class="device-stats">
                             <div class="d-stat">
-                                <div class="d-stat-label">Local Users</div>
+                                <div class="d-stat-label">{{ __('Local Users') }}</div>
                                 <div class="d-stat-val">{{ number_format($users) }}</div>
                             </div>
                             <div class="d-stat">
-                                <div class="d-stat-label">Att Logs</div>
+                                <div class="d-stat-label">{{ __('Att Logs') }}</div>
                                 <div class="d-stat-val">{{ number_format($logs) }}</div>
                             </div>
                         </div>
                         <div style="font-size: 0.75rem; color: var(--text-muted); text-align: right; margin-top: 5px;">
-                            IP: {{ $meta['IPAddress'] ?? $device->ip ?? 'Unknown' }}
+                            IP: {{ $meta['IPAddress'] ?? $device->ip ?? __('Unknown') }}
                         </div>
                     </div>
                 @empty
                     <div class="empty-state" style="padding: 30px 20px;">
                         <i class="fas fa-satellite"></i>
-                        <h3>No Devices</h3>
-                        <p style="font-size: 0.85rem;">Connect a device to monitor it.</p>
+                        <h3>{{ __('No Devices') }}</h3>
+                        <p style="font-size: 0.85rem;">{{ __('Connect a device to monitor it.') }}</p>
                     </div>
                 @endforelse
             </div>

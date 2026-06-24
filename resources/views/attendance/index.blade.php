@@ -162,6 +162,17 @@
         opacity: 0.5; 
         cursor: not-allowed; 
     }
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    var menu = document.getElementById('exportMenu');
+    if (menu && menu.classList.contains('show') && !event.target.closest('.dropdown-menu') && !event.target.closest('button[onclick*="exportMenu"]')) {
+        menu.classList.remove('show');
+    }
+});
+</script>
+<style>
+    .dropdown-menu.show { display: block !important; }
+    .dropdown-menu a:hover { background: rgba(255,255,255,0.05) !important; }
 </style>
 @endpush
 
@@ -169,18 +180,18 @@
 
 <div class="card">
     <div class="section-header">
-        <h2><i class="fas fa-history text-blue-400"></i> Attendance Records</h2>
+        <h2><i class="fas fa-history text-blue-400"></i> {{ __('Attendance Records') }}</h2>
         <div style="display: flex; gap: 10px;">
-            <form action="/attendance/clear" method="POST" onsubmit="return confirm('Are you sure you want to delete all attendance records from the database and send a CLEAR LOG command to all devices? This action cannot be undone.');" style="margin: 0;">
+            <form action="/attendance/clear" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to delete all attendance records from the database and send a CLEAR LOG command to all devices? This action cannot be undone.') }}');" style="margin: 0;">
                 @csrf
                 <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);">
-                    <i class="fas fa-trash-alt"></i> Clear All Logs
+                    <i class="fas fa-trash-alt"></i> {{ __('Clear All Logs') }}
                 </button>
             </form>
-            <form action="/attendance/fetch" method="POST" onsubmit="return confirm('This will send a command to all connected devices to fetch new logs. Proceed?');" style="margin: 0;">
+            <form action="/attendance/fetch" method="POST" onsubmit="return confirm('{{ __('This will send a command to all connected devices to fetch new logs. Proceed?') }}');" style="margin: 0;">
                 @csrf
                 <button type="submit" class="btn" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);">
-                    <i class="fas fa-bolt"></i> Fast Sync Logs
+                    <i class="fas fa-bolt"></i> {{ __('Fast Sync Logs') }}
                 </button>
             </form>
         </div>
@@ -190,21 +201,36 @@
         <div class="search-filter-bar">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Search by name or ID...">
+                <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('Search by name or ID...') }}">
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
-                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">From:</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">{{ __('From:') }}</span>
                 <input type="date" name="start_date" value="{{ $startDate }}" style="background: rgba(0,0,0,0.2); color: white; border: 1px solid rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 10px; font-size: 0.9rem; outline: none; cursor: pointer;">
                 
-                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">To:</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">{{ __('To:') }}</span>
                 <input type="date" name="end_date" value="{{ $endDate }}" style="background: rgba(0,0,0,0.2); color: white; border: 1px solid rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 10px; font-size: 0.9rem; outline: none; cursor: pointer;">
-                
-                <button type="submit" class="btn btn-secondary">
-                    <i class="fas fa-filter"></i> Apply Filters
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
+                <button type="submit" class="btn btn-secondary" style="flex: 1;">
+                    <i class="fas fa-filter"></i> {{ __('Filter') }}
                 </button>
-                <a href="/attendance" class="btn btn-secondary" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); text-decoration: none;">
-                    <i class="fas fa-times-circle"></i> Clear Filters
+                <a href="/attendance" class="btn btn-secondary" style="background: transparent;">
+                    {{ __('Reset') }}
                 </a>
+                
+                <div style="position: relative; flex: 1; max-width: 150px;">
+                    <button type="button" class="btn" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="document.getElementById('exportMenu').classList.toggle('show')">
+                        <i class="fas fa-download"></i> {{ __('Export') }} <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>
+                    </button>
+                    <div id="exportMenu" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; margin-top: 5px; z-index: 100; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);">
+                        <a href="{{ route('attendance.export.pdf', request()->all()) }}" target="_blank" style="display: block; padding: 10px 15px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <i class="fas fa-file-pdf" style="color: #f43f5e; width: 20px;"></i> {{ __('Export PDF') }}
+                        </a>
+                        <a href="{{ route('attendance.export.excel', request()->all()) }}" style="display: block; padding: 10px 15px; color: white; text-decoration: none;">
+                            <i class="fas fa-file-excel" style="color: #10b981; width: 20px;"></i> {{ __('Export Excel') }}
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
@@ -213,19 +239,19 @@
         <table>
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>User ID</th>
-                    <th>Timestamp</th>
-                    <th>Status</th>
-                    <th style="text-align: right;">Device ID</th>
-                    <th style="text-align: right; width: 60px;">Actions</th>
+                    <th>{{ __('Name') }}</th>
+                    <th>{{ __('User ID') }}</th>
+                    <th>{{ __('Timestamp') }}</th>
+                    <th>{{ __('Status') }}</th>
+                    <th style="text-align: right;">{{ __('Device ID') }}</th>
+                    <th style="text-align: right; width: 60px;">{{ __('Actions') }}</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($attendances as $att)
                     <tr>
                         <td>
-                            <div style="font-weight: 600; font-size: 1rem; color: white;">{{ $att->user->name ?? $att->user_name ?? 'Unknown' }}</div>
+                            <div style="font-weight: 600; font-size: 1rem; color: white;">{{ $att->user->name ?? $att->user_name ?? __('Unknown') }}</div>
                         </td>
                         <td>
                             <div style="color: var(--text-muted);">{{ $att->user_id }}</div>
@@ -237,32 +263,32 @@
                         <td>
                             @if(isset($att->calculated_status))
                                 @if($att->calculated_status == 'Check-In')
-                                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 5px 10px; border-radius: 6px;"><i class="fas fa-arrow-right-to-bracket"></i> Check-In (Arrivée)</span>
+                                    <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 5px 10px; border-radius: 6px;"><i class="fas fa-arrow-right-to-bracket"></i> {{ __('Check-In (Arrivée)') }}</span>
                                 @elseif($att->calculated_status == 'Check-Out')
-                                    <span class="badge" style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); padding: 5px 10px; border-radius: 6px;"><i class="fas fa-arrow-right-from-bracket"></i> Check-Out (Départ)</span>
+                                    <span class="badge" style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); padding: 5px 10px; border-radius: 6px;"><i class="fas fa-arrow-right-from-bracket"></i> {{ __('Check-Out (Départ)') }}</span>
                                 @else
-                                    <span class="badge" style="background: rgba(100, 116, 139, 0.15); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); padding: 5px 10px; border-radius: 6px;"><i class="fas fa-clock"></i> Intermediate Log</span>
+                                    <span class="badge" style="background: rgba(100, 116, 139, 0.15); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); padding: 5px 10px; border-radius: 6px;"><i class="fas fa-clock"></i> {{ __('Intermediate Log') }}</span>
                                 @endif
                             @else
                                 @if($att->status == 0 || $att->status == '0' || $att->status == 'Check-In')
-                                    <span class="badge badge-checkin"><i class="fas fa-arrow-right-to-bracket"></i> Check-In (Arrivée)</span>
+                                    <span class="badge badge-checkin"><i class="fas fa-arrow-right-to-bracket"></i> {{ __('Check-In (Arrivée)') }}</span>
                                 @elseif($att->status == 1 || $att->status == '1' || $att->status == 'Check-Out')
-                                    <span class="badge badge-checkout"><i class="fas fa-arrow-right-from-bracket"></i> Check-Out (Départ)</span>
+                                    <span class="badge badge-checkout"><i class="fas fa-arrow-right-from-bracket"></i> {{ __('Check-Out (Départ)') }}</span>
                                 @elseif($att->status == 2 || $att->status == '2')
-                                    <span class="badge badge-break"><i class="fas fa-mug-hot"></i> Break-Out</span>
+                                    <span class="badge badge-break"><i class="fas fa-mug-hot"></i> {{ __('Break-Out') }}</span>
                                 @elseif($att->status == 3 || $att->status == '3')
-                                    <span class="badge badge-break"><i class="fas fa-mug-hot"></i> Break-In</span>
+                                    <span class="badge badge-break"><i class="fas fa-mug-hot"></i> {{ __('Break-In') }}</span>
                                 @elseif($att->status == 4 || $att->status == '4')
-                                    <span class="badge badge-overtime"><i class="fas fa-clock"></i> OT-In</span>
+                                    <span class="badge badge-overtime"><i class="fas fa-clock"></i> {{ __('OT-In') }}</span>
                                 @elseif($att->status == 5 || $att->status == '5')
-                                    <span class="badge badge-overtime"><i class="fas fa-clock"></i> OT-Out</span>
+                                    <span class="badge badge-overtime"><i class="fas fa-clock"></i> {{ __('OT-Out') }}</span>
                                 @else
                                     <span class="badge badge-unknown">{{ $att->status }}</span>
                                 @endif
                             @endif
                         </td>
                         <td style="text-align: right;">
-                            <div style="color: var(--text-muted); font-family: monospace;">{{ $att->device_id ?? 'Unknown' }}</div>
+                            <div style="color: var(--text-muted); font-family: monospace;">{{ $att->device_id ?? __('Unknown') }}</div>
                         </td>
                         <td style="text-align: right;">
                             <form action="/attendance/{{ $att->id }}/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this record from the database?');" style="margin: 0;">
@@ -277,7 +303,7 @@
                     <tr>
                         <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
                             <i class="fas fa-history" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
-                            <p>No attendance records found.</p>
+                            <p>{{ __('No attendance records found.') }}</p>
                         </td>
                     </tr>
                 @endforelse

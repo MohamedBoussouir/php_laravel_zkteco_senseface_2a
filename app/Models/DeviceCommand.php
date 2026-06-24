@@ -9,5 +9,5 @@ class DeviceCommand extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = ['device_id', 'command', 'status', 'response'];
 }

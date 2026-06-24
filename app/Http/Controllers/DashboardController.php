@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Attendance;
 use App\Models\Device;
+use App\Models\MonthlyPattern;
 use App\Models\Payload;
+use App\Models\User;
+use App\Models\WorkPattern;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -58,13 +63,53 @@ class DashboardController extends Controller
         return response()->json(['success' => false], 404);
     }
 
-    // عرض صفحة الموظفين
-    public function employeesIndex()
+    // إزالة جهاز (AJAX)
+    public function removeDevice(Request $request)
     {
-        $employees = \App\Models\User::paginate(20);
-        $workPatterns = \App\Models\WorkPattern::all();
-        $monthlyPatterns = \App\Models\MonthlyPattern::all();
-        $devices = \App\Models\Device::all();
+        $device = Device::find($request->id);
+        if ($device) {
+            $device->delete();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false], 404);
+    }
+
+    // عرض صفحة الموظفين
+    public function employeesIndex(Request $request)
+    {
+        $query = User::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('user_id', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('filter_face')) {
+            $query->where('has_face', 1);
+        }
+        if ($request->filled('filter_fp')) {
+            $query->whereNotNull('fingerprints')->where('fingerprints', '!=', '[]')->where('fingerprints', '!=', 'null');
+        }
+        if ($request->filled('filter_photo')) {
+            $query->whereNotNull('photo')->where('photo', '!=', '');
+        }
+        if ($request->filled('filter_card')) {
+            $query->whereNotNull('card_number')->where('card_number', '!=', '');
+        }
+        if ($request->filled('filter_pass')) {
+            $query->whereNotNull('password')->where('password', '!=', '');
+        }
+
+        // Sort by user_id numerically (MySQL compatible)
+        $query->orderByRaw('CAST(user_id AS UNSIGNED) asc');
+
+        $employees = $query->paginate(20)->appends($request->all());
+        $workPatterns = WorkPattern::all();
+        $monthlyPatterns = MonthlyPattern::all();
+        $devices = Device::all();
         return view('employees.index', compact('employees', 'workPatterns', 'monthlyPatterns', 'devices'));
     }
 

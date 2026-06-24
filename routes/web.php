@@ -22,14 +22,27 @@ Route::post('/iclock/cdata', [DeviceController::class, 'receiveData']);
 Route::get('/iclock/getrequest', [DeviceController::class, 'getRequests']);
 Route::post('/iclock/devicecmd', [DeviceController::class, 'deviceCmd']);
 
+// Language Route
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'ar', 'fr'])) {
+        session(['locale' => $locale]);
+    }
+    return redirect()->back();
+});
+
 // Protected Admin Routes
 Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/api/latest-attendance', function () {
+        $latest = \App\Models\Attendance::with('user')->orderBy('id', 'desc')->first();
+        return response()->json($latest);
+    });
     Route::get('/', [DashboardController::class, 'index']);
 
     // Devices
     Route::get('/devices', [DashboardController::class, 'devicesIndex']);
     Route::get('/devices/pending', [DashboardController::class, 'pendingDevices']);
     Route::post('/devices/approve', [DashboardController::class, 'approveDevice']);
+    Route::post('/devices/remove', [DashboardController::class, 'removeDevice']);
 
     // Employees
     Route::get('/employees', [DashboardController::class, 'employeesIndex']);
@@ -76,6 +89,8 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('/attendance/fetch', [AttendanceController::class, 'fetch']);
     Route::post('/attendance/clear', [AttendanceController::class, 'clearAll']);
     Route::post('/attendance/{id}/delete', [AttendanceController::class, 'destroy']);
+    Route::get('/attendance/export/pdf', [AttendanceController::class, 'exportPdf'])->name('attendance.export.pdf');
+    Route::get('/attendance/export/excel', [AttendanceController::class, 'exportExcel'])->name('attendance.export.excel');
 
     // Reports
     Route::get('/reports/absence', [ReportController::class, 'absence'])->name('reports.absence');

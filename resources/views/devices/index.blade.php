@@ -109,9 +109,9 @@
 @section('content')
 
 <div class="top-bar">
-    <h1 class="page-title">Device Management</h1>
+    <h1 class="page-title">{{ __('Device Management') }}</h1>
     <button class="listen-btn" id="listenBtn" onclick="toggleListening()">
-        <i class="fas fa-radar"></i> <span>Listen for Devices</span>
+        <i class="fas fa-radar"></i> <span>{{ __('Listen for Devices') }}</span>
     </button>
 </div>
 
@@ -119,21 +119,21 @@
     <table>
         <thead>
             <tr>
-                <th>Serial Number</th>
-                <th>Status</th>
-                <th>Last Seen</th>
-                <th>Actions</th>
+                <th>{{ __('Serial Number') }}</th>
+                <th>{{ __('Status') }}</th>
+                <th>{{ __('Last Seen') }}</th>
+                <th>{{ __('Actions') }}</th>
             </tr>
         </thead>
         <tbody>
             @foreach($approvedDevices as $device)
             <tr>
                 <td><strong>{{ $device->sn }}</strong></td>
-                <td><span style="color: var(--success);"><i class="fas fa-check-circle"></i> Approved</span></td>
+                <td><span style="color: var(--success);"><i class="fas fa-check-circle"></i> {{ __('Approved') }}</span></td>
                 <td>{{ \Carbon\Carbon::parse($device->last_seen)->diffForHumans() }}</td>
                 <td>
-                    <button style="background: rgba(244,63,94,0.2); color: #f43f5e; border:none; padding: 5px 10px; border-radius:4px; cursor:pointer;">
-                        Remove
+                    <button onclick="removeDevice({{ $device->id }})" style="background: rgba(244,63,94,0.2); color: #f43f5e; border:none; padding: 5px 10px; border-radius:4px; cursor:pointer;">
+                        {{ __('Remove') }}
                     </button>
                 </td>
             </tr>
@@ -141,7 +141,7 @@
             @if($approvedDevices->isEmpty())
             <tr>
                 <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-muted);">
-                    No approved devices found. Click "Listen for Devices" to discover new ones.
+                    {{ __('No approved devices found. Click "Listen for Devices" to discover new ones.') }}
                 </td>
             </tr>
             @endif
@@ -228,6 +228,26 @@
                 window.location.reload();
             } else {
                 alert("Failed to approve device.");
+            }
+        });
+    }
+    function removeDevice(id) {
+        if (!confirm("Are you sure you want to remove this device?")) return;
+
+        fetch('/devices/remove', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ id: id })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert("Failed to remove device.");
             }
         });
     }

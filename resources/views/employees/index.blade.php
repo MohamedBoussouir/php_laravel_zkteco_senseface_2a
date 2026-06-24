@@ -127,15 +127,51 @@
 
 @section('content')
 
-<div class="top-bar">
-    <h1 class="page-title"><i class="fas fa-users"></i> Employees Directory</h1>
+<div class="top-bar" style="flex-wrap: wrap; gap: 15px;">
+    <h1 class="page-title"><i class="fas fa-users"></i> {{ __('Employees Directory') }}</h1>
+    
+    <div class="search-container" style="flex-grow: 1; max-width: 500px; min-width: 200px; position: relative;">
+        <form id="autoSearchForm" action="/employees" method="GET" style="display: flex; flex-direction: column; width: 100%; gap: 10px;">
+            <div style="display: flex; width: 100%; gap: 5px;">
+                <input id="autoSearchInput" type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Search by name or ID...') }}" style="flex-grow: 1; padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.05); color: #fff; outline: none;">
+                
+                <button id="filterBtn" type="button" class="btn-text" onclick="document.getElementById('filterDropdown').style.display = document.getElementById('filterDropdown').style.display === 'none' ? 'flex' : 'none'" style="padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer; background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+                    <i class="fas fa-filter"></i> {{ __('Filter') }}
+                </button>
+
+                @if(request()->except('page'))
+                    <a href="/employees" class="btn-text" style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 10px; border-radius: 8px; border: none;"><i class="fas fa-times"></i></a>
+                @endif
+            </div>
+            
+            <div id="filterDropdown" style="display: {{ request()->hasAny(['filter_face', 'filter_fp', 'filter_photo', 'filter_card', 'filter_pass']) ? 'flex' : 'none' }}; flex-direction: column; gap: 12px; position: absolute; top: 48px; right: 0; background: #1e293b; padding: 15px 20px; border-radius: 8px; border: 1px solid var(--border-color); z-index: 50; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); min-width: 220px;">
+                <div style="font-size: 0.95rem; font-weight: 600; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;">{{ __('Filter By Attributes') }}</div>
+                <label style="color: #cbd5e1; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" name="filter_face" value="1" {{ request('filter_face') ? 'checked' : '' }} onchange="this.form.submit()"> <i class="fas fa-user-circle" style="color: #c084fc; width: 16px; text-align: center;"></i> {{ __('Face') }}
+                </label>
+                <label style="color: #cbd5e1; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" name="filter_fp" value="1" {{ request('filter_fp') ? 'checked' : '' }} onchange="this.form.submit()"> <i class="fas fa-fingerprint" style="color: #38bdf8; width: 16px; text-align: center;"></i> {{ __('Fingerprint') }}
+                </label>
+                <label style="color: #cbd5e1; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" name="filter_photo" value="1" {{ request('filter_photo') ? 'checked' : '' }} onchange="this.form.submit()"> <i class="fas fa-image" style="color: #a7f3d0; width: 16px; text-align: center;"></i> {{ __('Photo') }}
+                </label>
+                <label style="color: #cbd5e1; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" name="filter_card" value="1" {{ request('filter_card') ? 'checked' : '' }} onchange="this.form.submit()"> <i class="fas fa-id-card" style="color: #34d399; width: 16px; text-align: center;"></i> {{ __('Card') }}
+                </label>
+                <label style="color: #cbd5e1; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" name="filter_pass" value="1" {{ request('filter_pass') ? 'checked' : '' }} onchange="this.form.submit()"> <i class="fas fa-key" style="color: #facc15; width: 16px; text-align: center;"></i> {{ __('Password') }}
+                </label>
+            </div>
+        </form>
+    </div>
+
     <div style="display: flex; gap: 10px;">
         <form action="/employees/fetch-from-device" method="POST">
             @csrf
-            <button type="submit" class="btn-text" style="background: rgba(16, 185, 129, 0.2); color: #10b981;"><i class="fas fa-download"></i> Fetch from Device</button>
+            <button type="submit" class="btn-text" style="background: rgba(16, 185, 129, 0.2); color: #10b981;"><i class="fas fa-download"></i> {{ __('Fetch from Device') }}</button>
         </form>
-        <a href="/employees/archived" class="btn-text" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);"><i class="fas fa-trash-restore"></i> Archived Employees</a>
-        <a href="/employees/create" class="btn-text btn-primary"><i class="fas fa-user-plus"></i> Add Employee</a>
+        <a href="/employees/archived" class="btn-text" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);"><i class="fas fa-trash-restore"></i> {{ __('Archived Employees') }}</a>
+        <a href="/employees/create" class="btn-text btn-primary"><i class="fas fa-user-plus"></i> {{ __('Add Employee') }}</a>
     </div>
 </div>
 
@@ -167,9 +203,9 @@
             </div>
             <div class="badge-row">
                 @if($employee->role == 14)
-                    <span class="badge badge-role-admin"><i class="fas fa-shield-halved"></i> Admin</span>
+                    <span class="badge badge-role-admin"><i class="fas fa-shield-halved"></i> {{ __('Admin') }}</span>
                 @else
-                    <span class="badge badge-role-user"><i class="fas fa-user"></i> User</span>
+                    <span class="badge badge-role-user"><i class="fas fa-user"></i> {{ __('User') }}</span>
                 @endif
                 <button type="button" class="schedule-text" style="background:transparent; border:none; cursor:pointer;" onclick="document.getElementById('wpForm{{ $employee->id }}').style.display='flex'">
                     <i class="fas fa-calendar-alt" style="margin-right:4px;"></i> {{ $employee->monthlyPattern ? $employee->monthlyPattern->name : ($employee->workPattern ? $employee->workPattern->name : 'Default Schedule') }}
@@ -204,31 +240,31 @@
         </div>
 
         <div class="col-actions">
-            <button type="button" class="action-btn btn-blue" title="Manage Fingerprints" onclick="document.getElementById('fpForm{{ $employee->id }}').style.display='flex'"><i class="fas fa-fingerprint"></i></button>
+            <button type="button" class="action-btn btn-blue" title="{{ __('Manage Fingerprints') }}" onclick="document.getElementById('fpForm{{ $employee->id }}').style.display='flex'"><i class="fas fa-fingerprint"></i></button>
             
-            <button type="button" class="action-btn btn-purple" title="Upload Photo" onclick="document.getElementById('photoForm{{ $employee->id }}').style.display='flex'"><i class="fas fa-camera"></i></button>
+            <button type="button" class="action-btn btn-purple" title="{{ __('Upload Photo') }}" onclick="document.getElementById('photoForm{{ $employee->id }}').style.display='flex'"><i class="fas fa-camera"></i></button>
             
             @if($employee->photo)
-            <form action="/employees/{{ $employee->id }}/delete-photo" method="POST" onsubmit="return confirm('Delete profile picture?');" style="display:inline;">
+            <form action="/employees/{{ $employee->id }}/delete-photo" method="POST" onsubmit="return confirm('{{ __('Delete profile picture?') }}');" style="display:inline;">
                 @csrf
-                <button type="submit" class="action-btn btn-red" title="Delete Photo"><i class="fas fa-image"></i></button>
+                <button type="submit" class="action-btn btn-red" title="{{ __('Delete Photo') }}"><i class="fas fa-image"></i></button>
             </form>
             @endif
             
             @if($employee->has_face)
-            <form action="/employees/{{ $employee->id }}/delete-face" method="POST" onsubmit="return confirm('Delete face?');" style="display:inline;">
+            <form action="/employees/{{ $employee->id }}/delete-face" method="POST" onsubmit="return confirm('{{ __('Delete face?') }}');" style="display:inline;">
                 @csrf
-                <button type="submit" class="action-btn btn-red" title="Delete Face"><i class="fas fa-user-astronaut"></i></button>
+                <button type="submit" class="action-btn btn-red" title="{{ __('Delete Face') }}"><i class="fas fa-user-astronaut"></i></button>
             </form>
             @endif
 
-            <button type="button" class="action-btn btn-yellow" title="Set Password & Card" onclick="document.getElementById('credForm{{ $employee->id }}').style.display='flex'"><i class="fas fa-key"></i></button>
+            <button type="button" class="action-btn btn-yellow" title="{{ __('Set Password & Card') }}" onclick="document.getElementById('credForm{{ $employee->id }}').style.display='flex'"><i class="fas fa-key"></i></button>
             
-            <button type="button" class="action-btn btn-blue" title="Edit User" onclick="document.getElementById('editForm{{ $employee->id }}').style.display='flex'"><i class="fas fa-edit"></i></button>
+            <button type="button" class="action-btn btn-blue" title="{{ __('Edit User') }}" onclick="document.getElementById('editForm{{ $employee->id }}').style.display='flex'"><i class="fas fa-edit"></i></button>
             
-            <form action="/employees/{{ $employee->id }}/delete" method="POST" onsubmit="return confirm('Delete completely?');" style="display:inline;">
+            <form action="/employees/{{ $employee->id }}/delete" method="POST" onsubmit="return confirm('{{ __('Delete completely?') }}');" style="display:inline;">
                 @csrf
-                <button type="submit" class="action-btn btn-red" title="Delete User"><i class="fas fa-trash"></i></button>
+                <button type="submit" class="action-btn btn-red" title="{{ __('Delete User') }}"><i class="fas fa-trash"></i></button>
             </form>
         </div>
         
@@ -515,5 +551,41 @@
         }
         document.getElementById('photoForm' + empId).style.display = 'none';
     }
+
+    // Auto-submit search form on typing (Debounce)
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('autoSearchInput');
+        const searchForm = document.getElementById('autoSearchForm');
+        let debounceTimer;
+
+        if (searchInput) {
+            // Focus if there is text OR if a search was just performed (URL has search parameter)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (searchInput.value || urlParams.has('search')) {
+                searchInput.focus();
+                const val = searchInput.value;
+                searchInput.value = '';
+                searchInput.value = val;
+            }
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    searchForm.submit();
+                }, 600); // 600ms delay to avoid submitting on every single keystroke
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('filterDropdown');
+            const filterBtn = document.getElementById('filterBtn');
+            if (dropdown && filterBtn) {
+                if (!dropdown.contains(event.target) && !filterBtn.contains(event.target)) {
+                    dropdown.style.display = 'none';
+                }
+            }
+        });
+    });
 </script>
 @endpush

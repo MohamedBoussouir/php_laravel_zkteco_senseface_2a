@@ -10,7 +10,7 @@ class Payload extends Model
 {
     use Prunable;
 
-    protected $guarded = [];
+    protected $fillable = ['device_sn', 'endpoint', 'content'];
 
     public function prunable(): Builder
     {

@@ -80,16 +80,16 @@
 @endif
 
 <div class="top-bar" style="margin-bottom: 30px;">
-    <h1 class="page-title"><i class="fas fa-calendar-alt text-blue-400"></i> Schedules & Shifts</h1>
+    <h1 class="page-title"><i class="fas fa-calendar-alt text-blue-400"></i> {{ __('Schedules & Shifts') }}</h1>
 </div>
 
 <div class="grid-container">
     <!-- SHIFTS SECTION -->
     <div class="card">
         <div class="card-header">
-            <div class="card-title"><i class="fas fa-clock text-blue-400"></i> Time Shifts</div>
+            <div class="card-title"><i class="fas fa-clock text-blue-400"></i> {{ __('Time Shifts') }}</div>
             <button class="btn btn-primary" onclick="document.getElementById('addShiftModal').style.display='flex'">
-                <i class="fas fa-plus"></i> Add Shift
+                <i class="fas fa-plus"></i> {{ __('Add Shift') }}
             </button>
         </div>
         
@@ -117,9 +117,9 @@
     <!-- WORK PATTERNS SECTION -->
     <div class="card">
         <div class="card-header">
-            <div class="card-title"><i class="fas fa-layer-group text-blue-400"></i> Work Patterns</div>
+            <div class="card-title"><i class="fas fa-layer-group text-blue-400"></i> {{ __('Work Patterns') }}</div>
             <button class="btn btn-primary" onclick="document.getElementById('addPatternModal').style.display='flex'">
-                <i class="fas fa-plus"></i> Add Pattern
+                <i class="fas fa-plus"></i> {{ __('Add Pattern') }}
             </button>
         </div>
 
@@ -156,9 +156,9 @@
                                 $currentShiftId = $pattern->days->where('day_of_week', $i)->first()?->shift_id;
                             @endphp
                             <div class="day-row">
-                                <div class="day-name">{{ $daysOfWeek[$i] }}</div>
+                                <div class="day-name">{{ __($daysOfWeek[$i]) }}</div>
                                 <select name="days[{{ $i }}]" class="form-control" style="width: 70%;">
-                                    <option value="" style="color: #ef4444;">-- Off Day --</option>
+                                    <option value="" style="color: #ef4444;">-- {{ __('Off Day') }} --</option>
                                     @foreach($shifts as $s)
                                         <option value="{{ $s->id }}" {{ $currentShiftId == $s->id ? 'selected' : '' }}>{{ $s->name }} ({{ $s->start_time }} - {{ $s->end_time }})</option>
                                     @endforeach
@@ -167,8 +167,8 @@
                         @endfor
 
                         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top: 20px;">
-                            <button type="button" class="btn btn-outline" onclick="document.getElementById('configPatternModal{{ $pattern->id }}').style.display='none'">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Configuration</button>
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('configPatternModal{{ $pattern->id }}').style.display='none'">{{ __('Cancel') }}</button>
+                            <button type="submit" class="btn btn-primary">{{ __('Save Configuration') }}</button>
                         </div>
                     </form>
                 </div>
@@ -177,8 +177,8 @@
             <!-- Assign Pattern Modal -->
             <div id="assignPatternModal{{ $pattern->id }}" class="modal-overlay">
                 <div class="modal-content" style="width: 500px;">
-                    <h3><i class="fas fa-users text-blue-400"></i> Assign: {{ $pattern->name }}</h3>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Select the employees who should follow this work pattern. Unchecking an employee will remove this pattern from them.</p>
+                    <h3><i class="fas fa-users text-blue-400"></i> {{ __('Assign:') }} {{ $pattern->name }}</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">{{ __('Select the employees who should follow this work pattern. Unchecking an employee will remove this pattern from them.') }}</p>
                     <form action="/schedules/patterns/{{ $pattern->id }}/assign" method="POST">
                         @csrf
                         <div style="max-height: 300px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
@@ -194,8 +194,8 @@
                         </div>
 
                         <div style="display:flex; justify-content:flex-end; gap:10px;">
-                            <button type="button" class="btn btn-outline" onclick="document.getElementById('assignPatternModal{{ $pattern->id }}').style.display='none'">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Assignments</button>
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('assignPatternModal{{ $pattern->id }}').style.display='none'">{{ __('Cancel') }}</button>
+                            <button type="submit" class="btn btn-primary">{{ __('Save Assignments') }}</button>
                         </div>
                     </form>
                 </div>
@@ -211,9 +211,9 @@
 <div style="margin-top: 20px;">
     <div class="card">
         <div class="card-header">
-            <div class="card-title"><i class="fas fa-calendar-days text-blue-400"></i> Monthly Work Patterns (31 Days)</div>
+            <div class="card-title"><i class="fas fa-calendar-days text-blue-400"></i> {{ __('Monthly Work Patterns (31 Days)') }}</div>
             <button class="btn btn-primary" onclick="document.getElementById('addMonthlyPatternModal').style.display='flex'">
-                <i class="fas fa-plus"></i> Add Monthly Pattern
+                <i class="fas fa-plus"></i> {{ __('Add Monthly Pattern') }}
             </button>
         </div>
         

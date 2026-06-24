@@ -19,43 +19,43 @@
 
 @section('content')
 <div class="card">
-    <h2><i class="fas fa-video text-blue-400"></i> Video Intercom Configuration (SIP)</h2>
+    <h2><i class="fas fa-video text-blue-400"></i> {{ __('Video Intercom Configuration (SIP)') }}</h2>
     
     <div class="alert-warning">
         <i class="fas fa-exclamation-triangle" style="margin-top: 3px;"></i>
         <div>
-            <strong>Important Prerequisite</strong><br>
-            For the WebRTC Intercom to work, the Asterisk Docker container must be running on this server. Ensure you have run <code>docker-compose up -d</code> in the project directory. Also, WebRTC requires HTTPS or localhost to access your microphone and camera.
+            <strong>{{ __('Important Prerequisite') }}</strong><br>
+            {{ __('For the WebRTC Intercom to work, the Asterisk Docker container must be running on this server. Ensure you have run') }} <code>docker-compose up -d</code> {{ __('in the project directory. Also, WebRTC requires HTTPS or localhost to access your microphone and camera.') }}
         </div>
     </div>
 
     <div class="instruction-block">
-        <h3 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">ZKTeco Device Settings</h3>
-        <p>Go to your ZKTeco SenseFace 2A menu: <strong>Comm. -> SIP Server</strong> and enter the exact following details:</p>
+        <h3 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">{{ __('ZKTeco Device Settings') }}</h3>
+        <p>{{ __('Go to your ZKTeco SenseFace 2A menu:') }} <strong>Comm. -> SIP Server</strong> {{ __('and enter the exact following details:') }}</p>
         
         <div style="background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
             <div class="setting-row">
-                <div class="setting-label">Server IP Address</div>
+                <div class="setting-label">{{ __('Server IP Address') }}</div>
                 <div class="setting-value">{{ $serverIp }}</div>
             </div>
             <div class="setting-row">
-                <div class="setting-label">Server Port</div>
+                <div class="setting-label">{{ __('Server Port') }}</div>
                 <div class="setting-value">5060</div>
             </div>
             <div class="setting-row">
-                <div class="setting-label">SIP Extension / Username</div>
+                <div class="setting-label">{{ __('SIP Extension / Username') }}</div>
                 <div class="setting-value">101</div>
             </div>
             <div class="setting-row">
-                <div class="setting-label">SIP Password</div>
+                <div class="setting-label">{{ __('SIP Password') }}</div>
                 <div class="setting-value">zktecopass</div>
             </div>
             <div class="setting-row">
-                <div class="setting-label">Intercom / Doorbell Number</div>
+                <div class="setting-label">{{ __('Intercom / Doorbell Number') }}</div>
                 <div class="setting-value">100</div>
             </div>
         </div>
-        <p style="margin-top: 15px; font-size: 0.85rem;">Note: The doorbell number is the extension that rings when the visitor presses the bell button. The dashboard is listening on extension 100.</p>
+        <p style="margin-top: 15px; font-size: 0.85rem;">{{ __('Note: The doorbell number is the extension that rings when the visitor presses the bell button. The dashboard is listening on extension 100.') }}</p>
     </div>
 </div>
 @endsection

@@ -125,4 +125,116 @@ class AttendanceController extends Controller
 
         return back()->with('success', "All attendance records deleted from database and CLEAR LOG command sent to $count devices.");
     }
+
+    public function exportPdf(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $search = $request->input('search');
+
+        $query = Attendance::with('user');
+        $query->orderBy('timestamp', 'desc');
+
+        if ($startDate) {
+            $query->whereRaw("CAST(timestamp AS DATETIME) >= ?", [$startDate . ' 00:00:00']);
+        }
+
+        if ($endDate) {
+            $query->whereRaw("CAST(timestamp AS DATETIME) <= ?", [$endDate . ' 23:59:59']);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('user_name', 'LIKE', '%' . $search . '%')
+                  ->orWhere('user_id', 'LIKE', '%' . $search . '%');
+            });
+        }
+
+        // Fetch all without pagination for export
+        $attendances = $query->get();
+        $calcMode = \App\Models\Setting::where('key', 'calc_mode')->value('value') ?? 'calculated';
+
+        if ($calcMode === 'calculated') {
+            foreach ($attendances as $att) {
+                $date = \Carbon\Carbon::parse($att->timestamp)->format('Y-m-d');
+                $dayLogs = Attendance::where('user_id', $att->user_id)
+                                ->where('timestamp', 'LIKE', $date . '%')
+                                ->get()
+                                ->sortBy(function($log) {
+                                    return \Carbon\Carbon::parse($log->timestamp)->timestamp;
+                                })->values();
+                                
+                if ($dayLogs->count() > 0) {
+                    $firstLog = $dayLogs->first();
+                    $lastLog = $dayLogs->last();
+                    
+                    if ($firstLog->id === $att->id) {
+                        $att->calculated_status = 'Check-In';
+                    } elseif ($lastLog->id === $att->id) {
+                        $att->calculated_status = 'Check-Out';
+                    } else {
+                        $att->calculated_status = 'Intermediate';
+                    }
+                }
+            }
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('attendance.pdf', compact('attendances', 'startDate', 'endDate'));
+        return $pdf->download('Attendance_Log.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $search = $request->input('search');
+
+        $query = Attendance::with('user');
+        $query->orderBy('timestamp', 'desc');
+
+        if ($startDate) {
+            $query->whereRaw("CAST(timestamp AS DATETIME) >= ?", [$startDate . ' 00:00:00']);
+        }
+
+        if ($endDate) {
+            $query->whereRaw("CAST(timestamp AS DATETIME) <= ?", [$endDate . ' 23:59:59']);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('user_name', 'LIKE', '%' . $search . '%')
+                  ->orWhere('user_id', 'LIKE', '%' . $search . '%');
+            });
+        }
+
+        $attendances = $query->get();
+        $calcMode = \App\Models\Setting::where('key', 'calc_mode')->value('value') ?? 'calculated';
+
+        if ($calcMode === 'calculated') {
+            foreach ($attendances as $att) {
+                $date = \Carbon\Carbon::parse($att->timestamp)->format('Y-m-d');
+                $dayLogs = Attendance::where('user_id', $att->user_id)
+                                ->where('timestamp', 'LIKE', $date . '%')
+                                ->get()
+                                ->sortBy(function($log) {
+                                    return \Carbon\Carbon::parse($log->timestamp)->timestamp;
+                                })->values();
+                                
+                if ($dayLogs->count() > 0) {
+                    $firstLog = $dayLogs->first();
+                    $lastLog = $dayLogs->last();
+                    
+                    if ($firstLog->id === $att->id) {
+                        $att->calculated_status = 'Check-In';
+                    } elseif ($lastLog->id === $att->id) {
+                        $att->calculated_status = 'Check-Out';
+                    } else {
+                        $att->calculated_status = 'Intermediate';
+                    }
+                }
+            }
+        }
+
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\AttendanceLogExport($attendances), 'Attendance_Log.xlsx');
+    }
 }

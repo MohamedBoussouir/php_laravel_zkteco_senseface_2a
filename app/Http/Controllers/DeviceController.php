@@ -94,10 +94,17 @@ class DeviceController extends Controller
                     
                     $pin = $data['pin'] ?? null;
                     if ($pin && $device) {
-                        $user = \App\Models\User::firstOrCreate(
-                            ['user_id' => $pin, 'device_id' => $device->id],
-                            ['name' => 'Unknown', 'role' => 0]
-                        );
+                        $user = \App\Models\User::where('user_id', $pin)->first();
+                        if ($user) {
+                            $user->device_id = $device->id;
+                        } else {
+                            $user = \App\Models\User::create([
+                                'user_id' => $pin, 
+                                'device_id' => $device->id,
+                                'name' => 'Unknown', 
+                                'role' => 0
+                            ]);
+                        }
                         
                         if (str_starts_with($line, 'USERPIC') && isset($data['content'])) {
                             $user->photo = $data['content'];
@@ -161,24 +168,32 @@ class DeviceController extends Controller
                 }
                 
                 if (isset($userData['pin']) && $device) {
-                    $existingUser = \App\Models\User::where('user_id', $userData['pin'])
-                                                    ->where('device_id', $device->id)
-                                                    ->first();
+                    $existingUser = \App\Models\User::where('user_id', $userData['pin'])->first();
                                                     
                     $name = !empty($userData['name']) ? $userData['name'] : ($existingUser ? $existingUser->name : 'Unknown');
                     $password = !empty($userData['passwd']) ? $userData['passwd'] : ($existingUser ? $existingUser->password : null);
                     $card = !empty($userData['card']) ? $userData['card'] : ($existingUser ? $existingUser->card_number : null);
 
-                    \App\Models\User::updateOrCreate(
-                        ['user_id' => $userData['pin'], 'device_id' => $device->id],
-                        [
+                    if ($existingUser) {
+                        $existingUser->update([
+                            'device_id' => $device->id,
+                            'uid' => $userData['uid'] ?? $existingUser->uid,
+                            'name' => $name,
+                            'role' => isset($userData['pri']) ? (int)$userData['pri'] : $existingUser->role,
+                            'password' => $password,
+                            'card_number' => $card
+                        ]);
+                    } else {
+                        \App\Models\User::create([
+                            'user_id' => $userData['pin'],
+                            'device_id' => $device->id,
                             'uid' => $userData['uid'] ?? null,
                             'name' => $name,
                             'role' => isset($userData['pri']) ? (int)$userData['pri'] : 0,
                             'password' => $password,
                             'card_number' => $card
-                        ]
-                    );
+                        ]);
+                    }
                 }
             }
         }

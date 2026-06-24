@@ -112,45 +112,52 @@
         </div>
         <div class="nav-menu">
             <a href="/" class="nav-item {{ request()->is('/') ? 'active' : '' }}">
-                <i class="fas fa-chart-pie"></i> Dashboard
+                <i class="fas fa-chart-pie"></i> {{ __('Dashboard') }}
             </a>
             <a href="/devices" class="nav-item {{ request()->is('devices') ? 'active' : '' }}">
-                <i class="fas fa-satellite-dish"></i> Devices
+                <i class="fas fa-satellite-dish"></i> {{ __('SIP Devices') }}
             </a>
             <a href="/employees" class="nav-item {{ request()->is('employees*') ? 'active' : '' }}">
-                <i class="fas fa-users"></i> Employees
+                <i class="fas fa-users"></i> {{ __('Employees Directory') }}
             </a>
             <a href="/schedules" class="nav-item {{ request()->is('schedules*') ? 'active' : '' }}">
-                <i class="fas fa-calendar-alt"></i> Schedules & Shifts
-            </a>
-            <a href="/roster" class="nav-item {{ request()->is('roster*') ? 'active' : '' }}">
-                <i class="fas fa-calendar-days"></i> Monthly Roster
+                <i class="fas fa-calendar-alt"></i> {{ __('Schedules & Shifts') }}
             </a>
             <a href="/attendance" class="nav-item {{ request()->is('attendance*') ? 'active' : '' }}">
-                <i class="fas fa-list-check"></i> Attendance
+                <i class="fas fa-list-check"></i> {{ __('Attendance Logs') }}
             </a>
             
             <div style="margin-top: 20px; margin-bottom: 10px; padding-left: 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 1px;">
-                Reports
+                {{ __('Reports') }}
             </div>
             <a href="/reports/absence" class="nav-item {{ request()->is('reports/absence*') ? 'active' : '' }}">
-                <i class="fas fa-user-xmark"></i> Absence Report
+                <i class="fas fa-user-xmark"></i> {{ __('Absence Report') }}
+            </a>
+            
             <div style="margin-top: 20px; margin-bottom: 10px; padding-left: 20px; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 1px;">
-                System
+                {{ __('System') }}
             </div>
             <a href="/settings" class="nav-item {{ request()->is('settings') ? 'active' : '' }}">
-                <i class="fas fa-cog"></i> Settings
+                <i class="fas fa-cog"></i> {{ __('Settings') }}
             </a>
-            <a href="/settings/sip" class="nav-item {{ request()->is('settings/sip*') ? 'active' : '' }}">
-                <i class="fas fa-video"></i> Video Intercom (SIP)
+            <a href="/settings/sip" class="nav-item {{ request()->is('settings/sip') ? 'active' : '' }}">
+                <i class="fas fa-phone-alt"></i> {{ __('SIP / Intercom Settings') }}
             </a>
 
             @if(Auth::guard('admin')->check())
                 <div style="margin-top: auto; padding: 20px;">
+                    <div style="margin-bottom: 15px;">
+                        <span style="color: var(--text-muted); font-size: 12px;">{{ __('Language') }}</span>
+                        <div style="display: flex; gap: 5px; margin-top: 5px;">
+                            <a href="/lang/en" style="padding: 5px 10px; background: {{ session('locale', 'en') == 'en' ? 'var(--accent)' : 'rgba(255,255,255,0.1)' }}; color: white; border-radius: 4px; text-decoration: none; font-size: 12px;">EN</a>
+                            <a href="/lang/ar" style="padding: 5px 10px; background: {{ session('locale') == 'ar' ? 'var(--accent)' : 'rgba(255,255,255,0.1)' }}; color: white; border-radius: 4px; text-decoration: none; font-size: 12px;">AR</a>
+                            <a href="/lang/fr" style="padding: 5px 10px; background: {{ session('locale') == 'fr' ? 'var(--accent)' : 'rgba(255,255,255,0.1)' }}; color: white; border-radius: 4px; text-decoration: none; font-size: 12px;">FR</a>
+                        </div>
+                    </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="nav-item" style="width: 100%; border: none; background: rgba(239, 68, 68, 0.1); color: #ef4444; border-radius: 8px; cursor: pointer; justify-content: flex-start;">
-                            <i class="fas fa-sign-out-alt"></i> Logout
+                            <i class="fas fa-sign-out-alt"></i> {{ __('Logout') }}
                         </button>
                     </form>
                 </div>
@@ -158,7 +165,7 @@
         </div>
     </div>
 
-    <div class="main-content">
+    <div class="main-content" dir="{{ session('locale') == 'ar' ? 'rtl' : 'ltr' }}">
         @yield('content')
     </div>
 
@@ -197,6 +204,72 @@
     @stack('scripts')
     <!-- Build app.js -> contains sip-client logic -->
     @vite(['resources/js/app.js'])
+
+    <!-- Live Notifications Script -->
+    <script>
+        let lastAttendanceId = null;
+        
+        function checkLatestAttendance() {
+            fetch('/api/latest-attendance')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data) return;
+                    
+                    if (lastAttendanceId === null) {
+                        lastAttendanceId = data.id; // Initialize on first load
+                        return;
+                    }
+                    
+                    if (data.id > lastAttendanceId) {
+                        lastAttendanceId = data.id;
+                        showLiveNotification(data);
+                        
+                        // If we are on the attendance page, reload the page to show new data
+                        if (window.location.pathname.includes('/attendance')) {
+                            setTimeout(() => { window.location.reload(); }, 2000);
+                        }
+                    }
+                })
+                .catch(error => console.error('Live Notification Error:', error));
+        }
+
+        function showLiveNotification(data) {
+            const userName = data.user ? data.user.name : (data.user_id || 'Unknown');
+            const time = new Date(data.timestamp).toLocaleTimeString();
+            
+            const toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.top = '20px';
+            toast.style.right = '20px';
+            toast.style.background = 'var(--accent)';
+            toast.style.color = 'white';
+            toast.style.padding = '15px 25px';
+            toast.style.borderRadius = '8px';
+            toast.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.5)';
+            toast.style.zIndex = '10000';
+            toast.style.display = 'flex';
+            toast.style.alignItems = 'center';
+            toast.style.gap = '15px';
+            toast.style.transition = 'opacity 0.5s ease-in-out';
+            
+            toast.innerHTML = `
+                <div style="font-size: 24px;"><i class="fas fa-fingerprint"></i></div>
+                <div>
+                    <div style="font-weight: bold; margin-bottom: 5px;">{{ __('New attendance recorded:') }}</div>
+                    <div>${userName} {{ __('at') }} ${time}</div>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 5000);
+        }
+
+        // Poll every 5 seconds
+        setInterval(checkLatestAttendance, 5000);
+    </script>
 </body>
 </html>
-

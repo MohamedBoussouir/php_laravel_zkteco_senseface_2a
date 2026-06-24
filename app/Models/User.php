@@ -16,7 +16,7 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, SoftDeletes;
 
-    protected $guarded = [];
+    protected $fillable = ['uid', 'user_id', 'name', 'email', 'password', 'role', 'device_id', 'fingerprints', 'work_pattern_id', 'photo', 'card_number', 'has_face', 'last_sync_time'];
 
     /**
      * Get the attributes that should be cast.

@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class MonthlyPatternDay extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['monthly_pattern_id', 'day_of_month', 'shift_id'];
 }

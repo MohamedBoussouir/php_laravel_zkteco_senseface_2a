@@ -57,7 +57,7 @@
 @section('content')
 
 <div class="top-bar" style="margin-bottom: 30px;">
-    <h1 class="page-title"><a href="/employees" style="color: var(--text-muted); text-decoration: none;"><i class="fas fa-arrow-left"></i></a> Add New Employee</h1>
+    <h1 class="page-title"><a href="/employees" style="color: var(--text-muted); text-decoration: none;"><i class="fas fa-arrow-left"></i></a> {{ __('Add New Employee') }}</h1>
 </div>
 
 <div class="form-container">
@@ -65,27 +65,27 @@
         @csrf
         
         <div class="form-group">
-            <label>Employee ID (PIN on device)</label>
+            <label>{{ __('Employee ID (PIN on device)') }}</label>
             <input type="number" name="user_id" class="form-control" value="{{ old('user_id') }}" required>
             @error('user_id') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group">
-            <label>Full Name</label>
+            <label>{{ __('Full Name') }}</label>
             <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
             @error('name') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group">
-            <label>Privilege (Role)</label>
+            <label>{{ __('Privilege (Role)') }}</label>
             <select name="role" class="form-control">
-                <option value="0">Normal User</option>
-                <option value="14">Administrator</option>
+                <option value="0">{{ __('Normal User') }}</option>
+                <option value="14">{{ __('Administrator') }}</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label>Assign to Device</label>
+            <label>{{ __('Assign to Device') }}</label>
             <select name="device_id" class="form-control">
                 @foreach($devices as $device)
                     <option value="{{ $device->id }}">{{ $device->sn }}</option>
@@ -94,17 +94,17 @@
         </div>
 
         <div class="form-group">
-            <label>Password (Optional)</label>
+            <label>{{ __('Password (Optional)') }}</label>
             <input type="password" name="password" class="form-control">
-            <small style="color: var(--text-muted);">Leave empty if not using password login.</small>
+            <small style="color: var(--text-muted);">{{ __('Leave empty if not using password login.') }}</small>
         </div>
 
         <div class="form-group">
-            <label>Card Number (Optional RFID)</label>
+            <label>{{ __('Card Number (Optional RFID)') }}</label>
             <input type="text" name="card_number" class="form-control" value="{{ old('card_number') }}">
         </div>
 
-        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save & Sync to Device</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> {{ __('Save & Sync to Device') }}</button>
     </form>
 </div>
 

@@ -57,7 +57,7 @@
 @section('content')
 
 <div class="top-bar" style="margin-bottom: 30px;">
-    <h1 class="page-title"><a href="/employees" style="color: var(--text-muted); text-decoration: none;"><i class="fas fa-arrow-left"></i></a> Edit Employee</h1>
+    <h1 class="page-title"><a href="/employees" style="color: var(--text-muted); text-decoration: none;"><i class="fas fa-arrow-left"></i></a> {{ __('Edit Employee') }}</h1>
 </div>
 
 <div class="form-container">
@@ -65,27 +65,27 @@
         @csrf
         
         <div class="form-group">
-            <label>Employee ID (PIN)</label>
+            <label>{{ __('Employee ID (PIN)') }}</label>
             <input type="number" class="form-control" value="{{ $employee->user_id }}" disabled>
-            <small style="color: var(--text-muted);">The PIN cannot be changed once created.</small>
+            <small style="color: var(--text-muted);">{{ __('The PIN cannot be changed once created.') }}</small>
         </div>
 
         <div class="form-group">
-            <label>Full Name</label>
+            <label>{{ __('Full Name') }}</label>
             <input type="text" name="name" class="form-control" value="{{ old('name', $employee->name) }}" required>
             @error('name') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
         <div class="form-group">
-            <label>Privilege (Role)</label>
+            <label>{{ __('Privilege (Role)') }}</label>
             <select name="role" class="form-control">
-                <option value="0" {{ $employee->role == 0 ? 'selected' : '' }}>Normal User</option>
-                <option value="14" {{ $employee->role == 14 ? 'selected' : '' }}>Administrator</option>
+                <option value="0" {{ $employee->role == 0 ? 'selected' : '' }}>{{ __('Normal User') }}</option>
+                <option value="14" {{ $employee->role == 14 ? 'selected' : '' }}>{{ __('Administrator') }}</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label>Assign to Device</label>
+            <label>{{ __('Assign to Device') }}</label>
             <select name="device_id" class="form-control">
                 @foreach($devices as $device)
                     <option value="{{ $device->id }}" {{ $employee->device_id == $device->id ? 'selected' : '' }}>{{ $device->sn }}</option>
@@ -94,17 +94,17 @@
         </div>
 
         <div class="form-group">
-            <label>Password (Optional)</label>
+            <label>{{ __('Password (Optional)') }}</label>
             <input type="password" name="password" class="form-control" value="{{ old('password', $employee->password) }}">
-            <small style="color: var(--text-muted);">Leave empty if not using password login.</small>
+            <small style="color: var(--text-muted);">{{ __('Leave empty if not using password login.') }}</small>
         </div>
 
         <div class="form-group">
-            <label>Card Number (Optional RFID)</label>
+            <label>{{ __('Card Number (Optional RFID)') }}</label>
             <input type="text" name="card_number" class="form-control" value="{{ old('card_number', $employee->card_number) }}">
         </div>
 
-        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update & Sync</button>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> {{ __('Update & Sync') }}</button>
     </form>
 </div>
 

@@ -78,63 +78,63 @@
 @section('content')
 
 <div class="top-bar" style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
-    <h1 class="page-title" style="margin: 0;"><i class="fas fa-file-alt text-blue-400"></i> Attendance & Lateness Report</h1>
+    <h1 class="page-title" style="margin: 0;"><i class="fas fa-file-alt text-blue-400"></i> {{ __('Attendance & Lateness Report') }}</h1>
 </div>
 
 <!-- Filters -->
 <div class="filter-card">
     <form action="/reports/absence" method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: flex-end;">
         <div>
-            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">Select Period Mode</label>
+            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Select Period Mode') }}</label>
             <select name="mode" id="report-mode" class="form-select" onchange="toggleInputs(this.value)">
-                <option value="day" {{ $mode == 'day' ? 'selected' : '' }}>Daily</option>
-                <option value="month" {{ $mode == 'month' ? 'selected' : '' }}>Monthly</option>
-                <option value="year" {{ $mode == 'year' ? 'selected' : '' }}>Yearly</option>
-                <option value="range" {{ $mode == 'range' ? 'selected' : '' }}>Date Range</option>
+                <option value="day" {{ $mode == 'day' ? 'selected' : '' }}>{{ __('Daily') }}</option>
+                <option value="month" {{ $mode == 'month' ? 'selected' : '' }}>{{ __('Monthly') }}</option>
+                <option value="year" {{ $mode == 'year' ? 'selected' : '' }}>{{ __('Yearly') }}</option>
+                <option value="range" {{ $mode == 'range' ? 'selected' : '' }}>{{ __('Date Range') }}</option>
             </select>
         </div>
 
         <div id="group-day" style="display: {{ $mode == 'day' ? 'block' : 'none' }};">
-            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">Select Date</label>
+            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Select Date') }}</label>
             <input type="date" name="date" class="form-control" value="{{ $date }}">
         </div>
 
         <div id="group-month" style="display: {{ $mode == 'month' ? 'block' : 'none' }};">
-            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">Select Month</label>
+            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Select Month') }}</label>
             <input type="month" name="month" class="form-control" value="{{ $month }}">
         </div>
 
         <div id="group-year" style="display: {{ $mode == 'year' ? 'block' : 'none' }};">
-            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">Select Year</label>
+            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Select Year') }}</label>
             <input type="number" name="year" class="form-control" value="{{ $year }}" min="2000" max="2100">
         </div>
 
         <div id="group-range" style="display: {{ $mode == 'range' ? 'flex' : 'none' }}; gap: 10px; align-items: center; grid-column: span 2;">
             <div style="flex:1;">
-                <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">From Date</label>
+                <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('From Date') }}</label>
                 <input type="date" name="start_date" class="form-control" value="{{ $startDateParam }}">
             </div>
-            <span style="color:var(--text-muted); padding-top:25px;">to</span>
+            <span style="color:var(--text-muted); padding-top:25px;">{{ __('to') }}</span>
             <div style="flex:1;">
-                <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">To Date</label>
+                <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('To Date') }}</label>
                 <input type="date" name="end_date" class="form-control" value="{{ $endDateParam }}">
             </div>
         </div>
 
         <div>
-            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">Default Start Time</label>
+            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Default Start Time') }}</label>
             <input type="time" name="start_time" class="form-control" value="{{ $defaultStartTime }}">
         </div>
 
         <div>
-            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">Default End Time</label>
+            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Default End Time') }}</label>
             <input type="time" name="end_time" class="form-control" value="{{ $defaultEndTime }}">
         </div>
 
         <div>
-            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">Employee</label>
+            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Employee') }}</label>
             <select name="employee_id" class="form-select">
-                <option value="">All Employees</option>
+                <option value="">{{ __('All Employees') }}</option>
                 @foreach($allEmployees as $emp)
                     <option value="{{ $emp->user_id }}" {{ ($employeeId ?? '') == $emp->user_id ? 'selected' : '' }}>{{ $emp->name }} ({{ $emp->user_id }})</option>
                 @endforeach
@@ -143,19 +143,19 @@
 
         <div style="display: flex; gap: 10px; align-items: flex-end;">
             <button type="submit" class="btn btn-primary" style="flex: 1; padding: 10px;">
-                <i class="fas fa-filter"></i> Apply Filters
+                <i class="fas fa-filter"></i> {{ __('Apply Filters') }}
             </button>
             
             <div style="position: relative; flex: 1;">
                 <button type="button" class="btn" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="document.getElementById('exportMenu').classList.toggle('show')">
-                    <i class="fas fa-download"></i> Export <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>
+                    <i class="fas fa-download"></i> {{ __('Export') }} <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>
                 </button>
                 <div id="exportMenu" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; margin-top: 5px; z-index: 100; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);">
                     <a href="{{ route('reports.absence.pdf', request()->all()) }}" target="_blank" style="display: block; padding: 10px 15px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                        <i class="fas fa-file-pdf" style="color: #f43f5e; width: 20px;"></i> Export PDF
+                        <i class="fas fa-file-pdf" style="color: #f43f5e; width: 20px;"></i> {{ __('Export PDF') }}
                     </a>
                     <a href="{{ route('reports.absence.excel', request()->all()) }}" style="display: block; padding: 10px 15px; color: white; text-decoration: none;">
-                        <i class="fas fa-file-excel" style="color: #10b981; width: 20px;"></i> Export Excel
+                        <i class="fas fa-file-excel" style="color: #10b981; width: 20px;"></i> {{ __('Export Excel') }}
                     </a>
                 </div>
             </div>
@@ -170,9 +170,9 @@
             <i class="fas fa-percentage"></i>
         </div>
         <div class="kpi-info">
-            <p>Attendance Rate</p>
+            <p>{{ __('Attendance Rate') }}</p>
             <h3 style="color: #10b981;">{{ $attendanceRate }}%</h3>
-            <p style="font-size: 0.75rem;">{{ $totalPresentDays }} / {{ $totalWorkingDays }} Work Days</p>
+            <p style="font-size: 0.75rem;">{{ $totalPresentDays }} / {{ $totalWorkingDays }} {{ __('Work Days') }}</p>
         </div>
     </div>
     
@@ -181,9 +181,9 @@
             <i class="fas fa-user-check"></i>
         </div>
         <div class="kpi-info">
-            <p>Present</p>
-            <h3>{{ $totalPresentDays }} <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted)">Days</span></h3>
-            <p style="font-size: 0.75rem;">Worked Hrs: {{ number_format($totalWorkedHours, 1) }} hrs</p>
+            <p>{{ __('Present') }}</p>
+            <h3>{{ $totalPresentDays }} <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted)">{{ __('Days') }}</span></h3>
+            <p style="font-size: 0.75rem;">{{ __('Worked Hrs') }}: {{ number_format($totalWorkedHours, 1) }} {{ __('hrs') }}</p>
         </div>
     </div>
     
@@ -192,8 +192,8 @@
             <i class="fas fa-folder-open"></i>
         </div>
         <div class="kpi-info">
-            <p>Absent</p>
-            <h3>{{ $totalAbsentDays }} <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted)">Days</span></h3>
+            <p>{{ __('Absent') }}</p>
+            <h3>{{ $totalAbsentDays }} <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted)">{{ __('Days') }}</span></h3>
         </div>
     </div>
     
@@ -202,9 +202,9 @@
             <i class="fas fa-clock"></i>
         </div>
         <div class="kpi-info">
-            <p>Late / Tardy</p>
-            <h3 style="color: #f43f5e;">{{ $totalLateDays }} <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted)">Days</span></h3>
-            <p style="font-size: 0.75rem; color:#f43f5e;">Total Delay: {{ $totalDelayMinutes }} mins</p>
+            <p>{{ __('Late / Tardy') }}</p>
+            <h3 style="color: #f43f5e;">{{ $totalLateDays }} <span style="font-size:0.8rem; font-weight:normal; color:var(--text-muted)">{{ __('Days') }}</span></h3>
+            <p style="font-size: 0.75rem; color:#f43f5e;">{{ __('Total Delay') }}: {{ $totalDelayMinutes }} {{ __('mins') }}</p>
         </div>
     </div>
 </div>
@@ -215,25 +215,25 @@
         <thead>
             @if($mode === 'day')
                 <tr>
-                    <th>Employee</th>
-                    <th>First Punch</th>
-                    <th>Last Punch</th>
-                    <th>Expected</th>
-                    <th>Status</th>
-                    <th>Delay (Mins)</th>
-                    <th>Worked Hrs</th>
-                    <th style="width: 80px;">Action</th>
+                    <th>{{ __('Employee') }}</th>
+                    <th>{{ __('First Punch') }}</th>
+                    <th>{{ __('Last Punch') }}</th>
+                    <th>{{ __('Expected') }}</th>
+                    <th>{{ __('Status') }}</th>
+                    <th>{{ __('Delay (Mins)') }}</th>
+                    <th>{{ __('Worked Hrs') }}</th>
+                    <th style="width: 80px;">{{ __('Action') }}</th>
                 </tr>
             @else
                 <tr>
-                    <th>Employee</th>
-                    <th>Work Days</th>
-                    <th>Present</th>
-                    <th>Absent</th>
-                    <th>Late</th>
-                    <th>Total Delay</th>
-                    <th>Worked Hrs</th>
-                    <th style="width: 80px;">Action</th>
+                    <th>{{ __('Employee') }}</th>
+                    <th>{{ __('Work Days') }}</th>
+                    <th>{{ __('Present') }}</th>
+                    <th>{{ __('Absent') }}</th>
+                    <th>{{ __('Late / Tardy') }}</th>
+                    <th>{{ __('Total Delay') }}</th>
+                    <th>{{ __('Worked Hrs') }}</th>
+                    <th style="width: 80px;">{{ __('Action') }}</th>
                 </tr>
             @endif
         </thead>
@@ -250,22 +250,22 @@
                         <td><span style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px;">{{ $row['expected'] }}</span></td>
                         <td>
                             @if($row['status'] == 'Late')
-                                <span class="badge badge-danger">Late 🔴</span>
+                                <span class="badge badge-danger">{{ __('Late') }} 🔴</span>
                             @elseif($row['status'] == 'On Time')
-                                <span class="badge badge-success">On Time 🟢</span>
+                                <span class="badge badge-success">{{ __('On Time') }} 🟢</span>
                             @elseif($row['status'] == 'Absent')
-                                <span class="badge badge-secondary">Absent 📁</span>
+                                <span class="badge badge-secondary">{{ __('Absent') }} 📁</span>
                             @elseif($row['status'] == 'Invalid Punch')
-                                <span class="badge badge-warning">Invalid Punch ⚠️</span>
+                                <span class="badge badge-warning">{{ __('Invalid Punch') }} ⚠️</span>
                             @else
-                                <span class="badge" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8;">Off Day 🔵</span>
+                                <span class="badge" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8;">{{ __('Off Day') }} 🔵</span>
                             @endif
                         </td>
                         <td style="{{ $row['status'] == 'Late' ? 'color:#f43f5e; font-weight:bold;' : '' }}">{{ $row['delay'] }}</td>
                         <td>{{ $row['worked'] }}</td>
                         <td>
                             <button class="btn" style="background: rgba(255,255,255,0.1); padding: 6px 10px; font-size: 0.8rem;" onclick="toggleDetails({{ $index }})">
-                                Details
+                                {{ __('Details') }}
                             </button>
                         </td>
                     </tr>
@@ -279,11 +279,11 @@
                         <td style="color:#34d399; font-weight:bold;">{{ $row['presentDays'] }}</td>
                         <td style="color:#94a3b8;">{{ $row['absentDays'] }}</td>
                         <td style="{{ $row['lateDays'] > 0 ? 'color:#f43f5e; font-weight:bold;' : '' }}">{{ $row['lateDays'] }}</td>
-                        <td style="{{ $row['totalDelayMins'] > 0 ? 'color:#f43f5e; font-weight:bold;' : '' }}">{{ $row['totalDelayMins'] }} mins</td>
-                        <td>{{ number_format($row['totalWorkedHrs'], 1) }} hrs</td>
+                        <td style="{{ $row['totalDelayMins'] > 0 ? 'color:#f43f5e; font-weight:bold;' : '' }}">{{ $row['totalDelayMins'] }} {{ __('mins') }}</td>
+                        <td>{{ number_format($row['totalWorkedHrs'], 1) }} {{ __('hrs') }}</td>
                         <td>
                             <button class="btn" style="background: rgba(255,255,255,0.1); padding: 6px 10px; font-size: 0.8rem;" onclick="toggleDetails({{ $index }})">
-                                Details
+                                {{ __('Details') }}
                             </button>
                         </td>
                     </tr>
@@ -293,17 +293,17 @@
                 <tr class="details-row" id="details-{{ $index }}">
                     <td colspan="8" style="padding: 0;">
                         <div style="padding: 20px; background: rgba(0,0,0,0.2);">
-                            <h6 style="margin-top: 0; color: var(--accent); margin-bottom: 15px;"><i class="fas fa-calendar-alt"></i> Daily Attendance Log for {{ $row['name'] }}</h6>
+                            <h6 style="margin-top: 0; color: var(--accent); margin-bottom: 15px;"><i class="fas fa-calendar-alt"></i> {{ __('Daily Attendance Log for') }} {{ $row['name'] }}</h6>
                             <table class="details-table" style="width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>First Punch</th>
-                                        <th>Last Punch</th>
-                                        <th>Shift Expected</th>
-                                        <th>Delay</th>
-                                        <th>Work Hrs</th>
-                                        <th>Status</th>
+                                        <th>{{ __('Date') }}</th>
+                                        <th>{{ __('First Punch') }}</th>
+                                        <th>{{ __('Last Punch') }}</th>
+                                        <th>{{ __('Shift Expected') }}</th>
+                                        <th>{{ __('Delay') }}</th>
+                                        <th>{{ __('Work Hrs') }}</th>
+                                        <th>{{ __('Status') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -317,15 +317,15 @@
                                             <td>{{ $daily['worked'] }}</td>
                                             <td>
                                                 @if($daily['status'] == 'Late')
-                                                    <span style="color:#f43f5e;"><i class="fas fa-circle" style="font-size:8px;"></i> Late</span>
+                                                    <span style="color:#f43f5e;"><i class="fas fa-circle" style="font-size:8px;"></i> {{ __('Late') }}</span>
                                                 @elseif($daily['status'] == 'On Time')
-                                                    <span style="color:#34d399;"><i class="fas fa-circle" style="font-size:8px;"></i> On Time</span>
+                                                    <span style="color:#34d399;"><i class="fas fa-circle" style="font-size:8px;"></i> {{ __('On Time') }}</span>
                                                 @elseif($daily['status'] == 'Absent')
-                                                    <span style="color:#94a3b8;"><i class="fas fa-circle" style="font-size:8px;"></i> Absent</span>
+                                                    <span style="color:#94a3b8;"><i class="fas fa-circle" style="font-size:8px;"></i> {{ __('Absent') }}</span>
                                                 @elseif($daily['status'] == 'Invalid Punch')
-                                                    <span style="color:#fbbf24;"><i class="fas fa-circle" style="font-size:8px;"></i> Invalid Punch</span>
+                                                    <span style="color:#fbbf24;"><i class="fas fa-circle" style="font-size:8px;"></i> {{ __('Invalid Punch') }}</span>
                                                 @else
-                                                    <span style="color:#38bdf8;"><i class="fas fa-circle" style="font-size:8px;"></i> Off Day</span>
+                                                    <span style="color:#38bdf8;"><i class="fas fa-circle" style="font-size:8px;"></i> {{ __('Off Day') }}</span>
                                                 @endif
                                             </td>
                                         </tr>
@@ -339,7 +339,7 @@
                 <tr>
                     <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">
                         <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
-                        <p style="font-size: 1.1rem;">No records found.</p>
+                        <p style="font-size: 1.1rem;">{{ __('No records found.') }}</p>
                     </td>
                 </tr>
             @endforelse
