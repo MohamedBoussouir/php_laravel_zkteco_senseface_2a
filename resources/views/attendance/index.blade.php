@@ -3,12 +3,8 @@
 @push('styles')
 <style>
     .card {
-        background-color: var(--card-bg);
-        border-radius: 12px;
-        border: 1px solid var(--border-color);
         padding: 25px;
         margin-bottom: 30px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .section-header {
         display: flex;
@@ -19,36 +15,16 @@
     .section-header h2 {
         margin: 0;
         font-size: 1.5rem;
+        font-weight: 800;
         color: white;
     }
-    .btn {
-        padding: 8px 15px;
-        border-radius: 8px;
-        font-weight: 500;
-        cursor: pointer;
-        border: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.85rem;
-        transition: 0.2s;
-    }
-    .btn-secondary {
-        background: rgba(255,255,255,0.1);
-        color: white;
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-    .btn-secondary:hover { background: rgba(255,255,255,0.15); }
     
     .search-filter-bar {
-        margin-bottom: 15px;
+        margin-bottom: 25px;
         display: flex;
         gap: 15px;
         align-items: center;
-        background: rgba(0, 0, 0, 0.15);
-        padding: 15px;
-        border-radius: 12px;
-        border: 1px solid rgba(255,255,255,0.05);
+        padding: 20px;
         flex-wrap: wrap;
     }
     
@@ -58,17 +34,9 @@
         min-width: 250px;
     }
     .search-box input {
-        background: rgba(0,0,0,0.2);
-        color: white;
-        border: 1px solid rgba(255,255,255,0.05);
-        padding: 10px 15px 10px 40px;
-        border-radius: 10px;
-        font-size: 0.9rem;
+        padding-left: 40px;
         width: 100%;
-        outline: none;
-        transition: border-color 0.3s;
     }
-    .search-box input:focus { border-color: var(--accent); }
     .search-box i {
         position: absolute;
         left: 15px;
@@ -79,16 +47,14 @@
     }
     
     .table-container {
-        background: var(--bg-color);
-        border: 1px solid rgba(255,255,255,0.05);
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
     }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    th { background: rgba(0,0,0,0.2); color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    td { color: var(--text-main); font-size: 0.95rem; }
-    tr:hover td { background: rgba(255,255,255,0.02); }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    th, td { padding: 15px 20px; text-align: left; }
+    th { background: rgba(0,0,0,0.3); color: var(--text-muted); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--glass-border); }
+    td { color: var(--text-main); font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.3s; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
     tr:last-child td { border-bottom: none; }
 
     .badge {
@@ -104,64 +70,7 @@
     .badge-break { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
     .badge-overtime { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
     .badge-unknown { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); border: 1px solid var(--border-color); }
-    /* Pagination Styles - Connected Block Style */
-    nav { display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 20px; }
-    
-    /* Hide Laravel's mobile pagination and 'Showing...' text */
-    nav > div:first-child, nav p, nav .text-sm, nav > div > div:first-child { display: none !important; }
-    
-    /* Show only the desktop pagination container */
-    nav > div:last-child { display: flex; justify-content: center; width: 100%; }
-    nav > div > div:last-child { display: flex; justify-content: center; width: 100%; }
-    
-    .pagination, nav span.relative.z-0.inline-flex { 
-        display: inline-flex; list-style: none; padding: 0; margin: 0; gap: 0; 
-        background: transparent; 
-        border-radius: 6px; 
-        border: 1px solid var(--border-color); 
-        overflow: hidden;
-    }
-    
-    .pagination li, nav span.relative.z-0.inline-flex > span, nav span.relative.z-0.inline-flex > a { 
-        display: inline-flex; 
-        border-right: 1px solid var(--border-color);
-    }
-    
-    /* Remove right border from last item */
-    .pagination li:last-child, nav span.relative.z-0.inline-flex > *:last-child {
-        border-right: none;
-    }
-    
-    .pagination li a, .pagination li span, nav span.relative.z-0.inline-flex > span > span, nav span.relative.z-0.inline-flex > a { 
-        padding: 8px 16px; 
-        background: rgba(255, 255, 255, 0.03); 
-        color: #cbd5e1; 
-        text-decoration: none; 
-        font-size: 0.95rem; 
-        font-weight: 500; 
-        transition: background 0.2s; 
-        display: flex; align-items: center; justify-content: center; min-width: 40px; 
-        border: none; border-radius: 0;
-    }
-    
-    .pagination li a:hover, nav span.relative.z-0.inline-flex > a:hover { 
-        background: rgba(255, 255, 255, 0.08); 
-        color: white; 
-        text-decoration: none; 
-    }
-    
-    .pagination li.active span, nav span.relative.z-0.inline-flex > span[aria-current="page"] > span { 
-        background: #3b82f6; 
-        color: white; 
-        border: none;
-        font-weight: bold;
-    }
-    
-    .pagination li.disabled span, nav span.relative.z-0.inline-flex > span[aria-disabled="true"] > span { 
-        background: rgba(0, 0, 0, 0.2);
-        opacity: 0.5; 
-        cursor: not-allowed; 
-    }
+    /* Global pagination from app.blade.php applies here */
 // Close dropdown when clicking outside
 document.addEventListener('click', function(event) {
     var menu = document.getElementById('exportMenu');
@@ -178,55 +87,54 @@ document.addEventListener('click', function(event) {
 
 @section('content')
 
-<div class="card">
+<div class="card glass-card">
     <div class="section-header">
         <h2><i class="fas fa-history text-blue-400"></i> {{ __('Attendance Records') }}</h2>
         <div style="display: flex; gap: 10px;">
             <form action="/attendance/clear" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to delete all attendance records from the database and send a CLEAR LOG command to all devices? This action cannot be undone.') }}');" style="margin: 0;">
                 @csrf
-                <button type="submit" class="btn" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);">
+                <button type="submit" class="glass-btn" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: none;">
                     <i class="fas fa-trash-alt"></i> {{ __('Clear All Logs') }}
                 </button>
             </form>
             <form action="/attendance/fetch" method="POST" onsubmit="return confirm('{{ __('This will send a command to all connected devices to fetch new logs. Proceed?') }}');" style="margin: 0;">
                 @csrf
-                <button type="submit" class="btn" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);">
+                <button type="submit" class="glass-btn" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); box-shadow: none;">
                     <i class="fas fa-bolt"></i> {{ __('Fast Sync Logs') }}
                 </button>
             </form>
         </div>
     </div>
     
-    <form action="/attendance" method="GET">
-        <div class="search-filter-bar">
+    <form id="autoSearchForm" action="/attendance" method="GET">
+        <div class="search-filter-bar glass-card">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('Search by name or ID...') }}">
+                <input id="autoSearchInput" type="text" class="glass-input" name="search" value="{{ $search }}" placeholder="{{ __('Search by name or ID...') }}">
             </div>
-            <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                 <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">{{ __('From:') }}</span>
-                <input type="date" name="start_date" value="{{ $startDate }}" style="background: rgba(0,0,0,0.2); color: white; border: 1px solid rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 10px; font-size: 0.9rem; outline: none; cursor: pointer;">
+                <input type="date" name="start_date" class="glass-input" value="{{ $startDate }}">
                 
                 <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">{{ __('To:') }}</span>
-                <input type="date" name="end_date" value="{{ $endDate }}" style="background: rgba(0,0,0,0.2); color: white; border: 1px solid rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 10px; font-size: 0.9rem; outline: none; cursor: pointer;">
-            </div>
-            <div style="display: flex; gap: 10px; align-items: center; width: 100%;">
-                <button type="submit" class="btn btn-secondary" style="flex: 1;">
+                <input type="date" name="end_date" class="glass-input" value="{{ $endDate }}">
+                
+                <button type="submit" class="glass-btn">
                     <i class="fas fa-filter"></i> {{ __('Filter') }}
                 </button>
-                <a href="/attendance" class="btn btn-secondary" style="background: transparent;">
+                <a href="/attendance" class="glass-btn" style="background: transparent; box-shadow: none; border: 1px solid var(--glass-border);">
                     {{ __('Reset') }}
                 </a>
                 
-                <div style="position: relative; flex: 1; max-width: 150px;">
-                    <button type="button" class="btn" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="document.getElementById('exportMenu').classList.toggle('show')">
+                <div style="position: relative;">
+                    <button type="button" class="glass-btn" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); box-shadow: none;" onclick="document.getElementById('exportMenu').classList.toggle('show')">
                         <i class="fas fa-download"></i> {{ __('Export') }} <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>
                     </button>
-                    <div id="exportMenu" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; margin-top: 5px; z-index: 100; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);">
-                        <a href="{{ route('attendance.export.pdf', request()->all()) }}" target="_blank" style="display: block; padding: 10px 15px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <div id="exportMenu" class="dropdown-menu" style="display: none; position: absolute; top: 100%; right: 0; background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 12px; margin-top: 5px; z-index: 100; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); min-width: 180px; backdrop-filter: blur(16px);">
+                        <a href="{{ route('attendance.export.pdf', request()->all()) }}" target="_blank" style="display: block; padding: 12px 15px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s;">
                             <i class="fas fa-file-pdf" style="color: #f43f5e; width: 20px;"></i> {{ __('Export PDF') }}
                         </a>
-                        <a href="{{ route('attendance.export.excel', request()->all()) }}" style="display: block; padding: 10px 15px; color: white; text-decoration: none;">
+                        <a href="{{ route('attendance.export.excel', request()->all()) }}" style="display: block; padding: 12px 15px; color: white; text-decoration: none; transition: 0.2s;">
                             <i class="fas fa-file-excel" style="color: #10b981; width: 20px;"></i> {{ __('Export Excel') }}
                         </a>
                     </div>
@@ -293,7 +201,7 @@ document.addEventListener('click', function(event) {
                         <td style="text-align: right;">
                             <form action="/attendance/{{ $att->id }}/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this record from the database?');" style="margin: 0;">
                                 @csrf
-                                <button type="submit" class="btn" style="padding: 4px 8px; background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); font-size: 0.75rem;">
+                                <button type="submit" class="glass-btn" style="padding: 6px 10px; background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); font-size: 0.85rem; box-shadow: none;">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
@@ -316,4 +224,30 @@ document.addEventListener('click', function(event) {
     @endif
 </div>
 
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('autoSearchInput');
+        const searchForm = document.getElementById('autoSearchForm');
+        let debounceTimer;
+
+        if (searchInput) {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (searchInput.value || urlParams.has('search')) {
+                searchInput.focus();
+                const val = searchInput.value;
+                searchInput.value = '';
+                searchInput.value = val;
+            }
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    searchForm.submit();
+                }, 600);
+            });
+        }
+    });
+</script>
+@endpush
 @endsection

@@ -12,7 +12,7 @@
         </div>
     @endif
 
-    <div class="card" style="background-color: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 25px; margin-bottom: 30px;">
+    <div class="glass-card" style="padding: 25px; margin-bottom: 30px;">
         <h4 style="margin-bottom: 20px; color: var(--text-main); font-weight: 600;">{{ __('Device Time Settings') }}</h4>
         <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem;">{{ __('Configure the date and time on your connected devices. You can choose to automatically sync with the server time or set a manual date and time.') }}</p>
 
@@ -21,7 +21,7 @@
             
             <div style="margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted);">{{ __('Select Device') }}</label>
-                <select name="device_id" class="form-control" style="width: 100%; padding: 10px 15px; background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; outline: none;" required>
+                <select name="device_id" class="glass-input" style="width: 100%;" required>
                     <option value="all">{{ __('All Approved Devices') }}</option>
                     @foreach($devices as $device)
                         <option value="{{ $device->id }}">{{ $device->name ?? 'Device '.$device->sn }} (SN: {{ $device->sn }})</option>
@@ -45,20 +45,20 @@
 
             <div id="manual_time_container" style="margin-bottom: 25px; display: none;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted);">{{ __('Manual Date & Time') }}</label>
-                <input type="datetime-local" name="manual_time" id="manual_time_input" class="form-control" style="width: 100%; padding: 10px 15px; background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; outline: none; color-scheme: dark;">
+                <input type="datetime-local" name="manual_time" id="manual_time_input" class="glass-input" style="width: 100%; color-scheme: dark;">
                 @error('manual_time')
                     <div style="color: #ef4444; font-size: 0.85rem; margin-top: 5px;">{{ $message }}</div>
                 @enderror
             </div>
 
-            <button type="submit" style="background-color: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px var(--accent-glow);">
+            <button type="submit" class="glass-btn">
                 <i class="fas fa-clock"></i> {{ __('Update Device Time') }}
             </button>
         </form>
     </div>
 
     <!-- Attendance Logging Mode Card -->
-    <div class="card" style="background-color: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 25px; margin-bottom: 30px;">
+    <div class="glass-card" style="padding: 25px; margin-bottom: 30px;">
         <h4 style="margin-bottom: 5px; color: var(--text-main); font-weight: 600;"><i class="fas fa-pencil-alt"></i> {{ __('Attendance Logging Mode') }}</h4>
         <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem;">{{ __('Choose how attendance punch states (Check-In / Check-Out) are recorded and displayed.') }}</p>
 
@@ -67,7 +67,7 @@
             
             <div style="margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted);">{{ __('Logging Strategy') }}</label>
-                <select name="calc_mode" id="setting-calc-mode" class="form-control" style="width: 100%; padding: 10px 15px; background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; outline: none;" onchange="updateStrategyExplanation()">
+                <select name="calc_mode" id="setting-calc-mode" class="glass-input" style="width: 100%;" onchange="updateStrategyExplanation()">
                     <option value="calculated" {{ $calcMode === 'calculated' ? 'selected' : '' }}>{{ __('Smart Calculation (First-In, Last-Out)') }}</option>
                     <option value="device" {{ $calcMode === 'device' ? 'selected' : '' }}>{{ __('Device Keypad Selection (Manual F1/F2)') }}</option>
                 </select>
@@ -77,14 +77,14 @@
                 <!-- Filled by JS -->
             </div>
 
-            <button type="submit" style="background-color: #a855f7; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;">
+            <button type="submit" class="glass-btn" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #a855f7, #7e22ce);">
                 <i class="fas fa-check-circle"></i> {{ __('Apply Strategy') }}
             </button>
         </form>
     </div>
 
     <!-- Device Screensaver Card -->
-    <div class="card" style="background-color: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); padding: 25px; margin-bottom: 30px;">
+    <div class="glass-card" style="padding: 25px; margin-bottom: 30px;">
         <h4 style="margin-bottom: 5px; color: var(--text-main); font-weight: 600;"><i class="fas fa-image"></i> {{ __('Device Screensaver (Ad Picture)') }}</h4>
         <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 0.95rem;">{{ __('Upload an image to be used as an advertisement/screensaver when the device is idle. Recommended image size: 1024x600 pixels. Max 2MB.') }}</p>
 
@@ -93,7 +93,7 @@
             
             <div style="margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted);">{{ __('Select Device') }}</label>
-                <select name="device_id" class="form-control" style="width: 100%; padding: 10px 15px; background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 6px; outline: none;" required>
+                <select name="device_id" class="glass-input" style="width: 100%;" required>
                     <option value="all">{{ __('All Approved Devices') }}</option>
                     @foreach($devices as $device)
                         <option value="{{ $device->id }}">{{ $device->name ?? 'Device '.$device->sn }} (SN: {{ $device->sn }})</option>
@@ -103,8 +103,7 @@
 
             <div style="margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted);">{{ __('Upload Image') }}</label>
-                <input type="file" name="wallpaper" id="wallpaper-input" accept="image/jpeg,image/png" required
-                    style="width: 100%; padding: 10px 15px; background-color: var(--bg-color); border: 1px dashed var(--border-color); color: var(--text-main); border-radius: 6px; outline: none; cursor: pointer;">
+                <input type="file" name="wallpaper" id="wallpaper-input" accept="image/jpeg,image/png" required class="glass-input" style="width: 100%; cursor: pointer;">
             </div>
 
             <div id="wallpaper-preview-container" style="margin-bottom: 20px; display: none;">
@@ -114,7 +113,7 @@
                 </div>
             </div>
 
-            <button type="submit" id="wallpaper-submit-btn" style="background-color: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;">
+            <button type="submit" id="wallpaper-submit-btn" class="glass-btn" style="width: 100%; justify-content: center;">
                 <i class="fas fa-upload"></i> {{ __('Upload Screensaver to Device') }}
             </button>
         </form>

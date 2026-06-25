@@ -22,22 +22,8 @@
     .badge-role-admin { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
     
     .col-actions { display: flex; gap: 8px; flex: 1; justify-content: flex-end; min-width: 250px; flex-wrap: wrap; }
-    .btn-text { padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-size: 0.9rem; }
-    .btn-primary { background: var(--accent); color: white; }
+    
     .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
-
-    /* Pagination Styles */
-    nav { display: flex; justify-content: center; align-items: center; width: 100%; margin-top: 20px; }
-    nav > div:first-child, nav p, nav .text-sm, nav > div > div:first-child { display: none !important; }
-    nav > div:last-child { display: flex; justify-content: center; width: 100%; }
-    nav > div > div:last-child { display: flex; justify-content: center; width: 100%; }
-    .pagination, nav span.relative.z-0.inline-flex { display: inline-flex; list-style: none; padding: 0; margin: 0; gap: 0; background: transparent; border-radius: 6px; border: 1px solid var(--border-color); overflow: hidden; }
-    .pagination li, nav span.relative.z-0.inline-flex > span, nav span.relative.z-0.inline-flex > a { display: inline-flex; border-right: 1px solid var(--border-color); }
-    .pagination li:last-child, nav span.relative.z-0.inline-flex > *:last-child { border-right: none; }
-    .pagination li a, .pagination li span, nav span.relative.z-0.inline-flex > span > span, nav span.relative.z-0.inline-flex > a { padding: 8px 16px; background: rgba(255, 255, 255, 0.03); color: #cbd5e1; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: background 0.2s; display: flex; align-items: center; justify-content: center; min-width: 40px; border: none; border-radius: 0; }
-    .pagination li a:hover, nav span.relative.z-0.inline-flex > a:hover { background: rgba(255, 255, 255, 0.08); color: white; text-decoration: none; }
-    .pagination li.active span, nav span.relative.z-0.inline-flex > span[aria-current="page"] > span { background: #3b82f6; color: white; border: none; font-weight: bold; }
-    .pagination li.disabled span, nav span.relative.z-0.inline-flex > span[aria-disabled="true"] > span { background: rgba(0, 0, 0, 0.2); opacity: 0.5; cursor: not-allowed; }
 </style>
 @endpush
 
@@ -48,7 +34,7 @@
         <h2><i class="fas fa-archive"></i> Archived Employees</h2>
     </div>
     <div style="display: flex; gap: 10px;">
-        <a href="/employees" class="btn-text btn-primary"><i class="fas fa-arrow-left"></i> Back to Employees</a>
+        <a href="/employees" class="glass-btn"><i class="fas fa-arrow-left"></i> Back to Employees</a>
     </div>
 </div>
 
@@ -56,7 +42,7 @@
     <div class="alert"><i class="fas fa-check-circle"></i> {{ session('success') }}</div>
 @endif
 
-<div class="list-container">
+<div class="glass-card" style="padding: 0; overflow: hidden;">
     @forelse($employees as $employee)
     <div class="user-item">
         
@@ -90,13 +76,13 @@
         <div class="col-actions">
             <form action="/employees/{{ $employee->id }}/restore" method="POST" onsubmit="return confirm('Are you sure you want to restore this employee?');" style="display:inline;">
                 @csrf
-                <button type="submit" class="btn-text" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);" title="Restore">
+                <button type="submit" class="glass-btn" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: none;" title="Restore">
                     <i class="fas fa-trash-restore"></i> Restore
                 </button>
             </form>
             <form action="/employees/{{ $employee->id }}/force-delete" method="POST" onsubmit="return confirm('Warning: This will permanently delete the employee and all their attendance records. This cannot be undone. Are you sure?');" style="display:inline;">
                 @csrf
-                <button type="submit" class="btn-text" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);" title="Permanent Delete">
+                <button type="submit" class="glass-btn" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: none;" title="Permanent Delete">
                     <i class="fas fa-ban"></i> Delete Permanently
                 </button>
             </form>

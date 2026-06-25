@@ -11,13 +11,9 @@
     /* Left Panel: Employee List */
     .employee-panel {
         width: 320px;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .panel-header {
         padding: 20px;
@@ -58,12 +54,8 @@
     /* Right Panel: Calendar */
     .calendar-panel {
         flex-grow: 1;
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         overflow: hidden;
     }
     .calendar-header {
@@ -128,12 +120,8 @@
     .shift-unassigned { background: transparent; border: 1px dashed var(--border-color); color: var(--text-muted); cursor: pointer; }
     .shift-unassigned:hover { background: rgba(255,255,255,0.05); }
 
-    .btn { padding: 8px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-size: 0.9rem; }
-    .btn-primary { background: var(--accent); color: white; }
-    .btn-outline { background: transparent; color: white; border: 1px solid var(--border-color); }
-
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; }
-    .modal-content { background: var(--sidebar-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color); width: 400px; max-width: 90%; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; }
+    .modal-content { padding: 30px; width: 400px; max-width: 90%; }
     .form-control { width: 100%; padding: 10px; background: rgba(0,0,0,0.2); color: white; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 15px;}
 </style>
 @endpush
@@ -169,13 +157,14 @@
                 <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
             @endfor
         </select>
-        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> View</button>
-    </form>
+        <a href="/schedules" class="glass-btn" style="background: rgba(255,255,255,0.05); box-shadow: none;">
+        <i class="fas fa-arrow-left"></i> {{ __('Back') }}
+    </a>
 </div>
 
 <div class="split-layout">
-    <!-- Left Panel: Employee List -->
-    <div class="employee-panel">
+    <!-- Left Panel -->
+    <div class="employee-panel glass-card" style="padding: 0;">
         <div class="panel-header">
             <h3 style="color:white; margin:0;"><i class="fas fa-users text-blue-400"></i> Select Employee</h3>
             <p style="color:var(--text-muted); font-size:0.85rem; margin-top:5px; margin-bottom:15px;">Choose an employee to view their specific month.</p>
@@ -206,13 +195,13 @@
                         Schedule for <strong style="color:white;">{{ $selectedUser->name }}</strong>
                     </p>
                 </div>
-                <div>
+                <div style="display: flex; gap: 10px;">
                     <form action="/roster/generate" method="POST" onsubmit="return confirm('This will automatically fill the entire month based on {{ $selectedUser->name }}\'s assigned work pattern. Proceed?');">
                         @csrf
                         <input type="hidden" name="user_id" value="{{ $selectedUser->id }}">
                         <input type="hidden" name="month" value="{{ $month }}">
                         <input type="hidden" name="year" value="{{ $year }}">
-                        <button type="submit" class="btn btn-primary" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);">
+                        <button type="submit" class="glass-btn" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: none;">
                             <i class="fas fa-magic"></i> Auto-Generate Month
                         </button>
                     </form>
@@ -278,7 +267,7 @@
 <!-- Edit Day Modal -->
 @if($selectedUser)
 <div id="editDayModal" class="modal-overlay">
-    <div class="modal-content">
+    <div class="modal-content glass-card">
         <h3 style="color: white; margin-top: 0;"><i class="fas fa-edit text-blue-400"></i> Change Schedule</h3>
         <p style="color: var(--text-muted); font-size: 0.9rem;" id="modalDesc"></p>
         
@@ -288,7 +277,7 @@
             <input type="hidden" name="date" id="edit_date">
             
             <label style="color: white; display: block; margin-bottom: 5px;">Select Shift for this day:</label>
-            <select name="shift_id" id="edit_shift_id" class="form-control">
+            <select name="shift_id" id="edit_shift_id" class="glass-input" style="width: 100%;">
                 <option value="" style="color: #ef4444;">-- OFF DAY --</option>
                 @foreach($shifts as $s)
                     <option value="{{ $s->id }}">{{ $s->name }} ({{ $s->start_time }} - {{ $s->end_time }})</option>
@@ -296,8 +285,8 @@
             </select>
 
             <div style="display:flex; justify-content:flex-end; gap:10px; margin-top: 15px;">
-                <button type="button" class="btn btn-outline" onclick="document.getElementById('editDayModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save Change</button>
+                <button type="button" class="glass-btn" style="background: transparent; box-shadow: none; border: 1px solid var(--glass-border);" onclick="document.getElementById('editDayModal').style.display='none'">Cancel</button>
+                <button type="submit" class="glass-btn">Save Change</button>
             </div>
         </form>
     </div>

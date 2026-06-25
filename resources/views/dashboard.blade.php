@@ -2,15 +2,15 @@
 <style>
     /* KPI Cards */
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
-    .kpi-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: transform 0.2s ease; }
-    .kpi-card:hover { transform: translateY(-3px); }
-    .kpi-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; flex-shrink: 0; }
-    .kpi-icon.blue { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
-    .kpi-icon.green { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-    .kpi-icon.red { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-    .kpi-icon.purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
-    .kpi-info h3 { margin: 0; font-size: 0.9rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .kpi-info .value { font-size: 1.8rem; font-weight: bold; color: white; line-height: 1.2; margin-top: 5px; }
+    .kpi-card { display: flex; align-items: center; gap: 15px; padding: 20px; text-decoration: none; }
+    .kpi-icon { width: 55px; height: 55px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 1.6rem; flex-shrink: 0; transition: transform 0.3s; }
+    .kpi-card:hover .kpi-icon { transform: scale(1.1) rotate(5deg); }
+    .kpi-icon.blue { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05)); color: #60a5fa; box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); border: 1px solid rgba(59, 130, 246, 0.3); }
+    .kpi-icon.green { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05)); color: #34d399; box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .kpi-icon.red { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(244, 63, 94, 0.05)); color: #fb7185; box-shadow: 0 0 15px rgba(244, 63, 94, 0.3); border: 1px solid rgba(244, 63, 94, 0.3); }
+    .kpi-icon.purple { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.05)); color: #c084fc; box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); border: 1px solid rgba(168, 85, 247, 0.3); }
+    .kpi-info h3 { margin: 0; font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .kpi-info .value { font-size: 2rem; font-weight: 800; color: white; line-height: 1.2; margin-top: 5px; }
     
     /* Main Layout Grid */
     .dashboard-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; align-items: start; }
@@ -19,9 +19,8 @@
     }
 
     /* Section Cards */
-    .section-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-    .section-header { padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.1); }
-    .section-title { margin: 0; font-size: 1.1rem; color: white; display: flex; align-items: center; gap: 10px; }
+    .section-header { padding: 24px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); }
+    .section-title { margin: 0; font-size: 1.2rem; font-weight: 700; color: white; display: flex; align-items: center; gap: 12px; }
     
     /* Recent Activity List */
     .activity-list { display: flex; flex-direction: column; }
@@ -60,14 +59,20 @@
 @section('content')
 
 <div class="container">
-    <div class="header" style="margin-bottom: 30px;">
-        <h1><i class="fas fa-chart-pie" style="color: var(--accent);"></i> {{ __('Dashboard') }}</h1>
-        <p>{{ __('Overview of Human Resources & Hardware') }}</p>
+    <div class="header" style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;">
+        <div>
+            <h1><i class="fas fa-chart-pie" style="color: var(--accent);"></i> {{ __('Dashboard') }}</h1>
+            <p>{{ __('Overview of Human Resources & Hardware') }}</p>
+        </div>
+        <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 12px; text-align: center;">
+            <div id="live-clock" style="font-size: 1.5rem; font-weight: bold; font-variant-numeric: tabular-nums; letter-spacing: 1px; color: white;">00:00:00</div>
+            <div id="live-date" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">--</div>
+        </div>
     </div>
 
     <!-- KPI Cards -->
     <div class="kpi-grid">
-        <div class="kpi-card">
+        <div class="kpi-card glass-card">
             <div class="kpi-icon blue">
                 <i class="fas fa-users"></i>
             </div>
@@ -77,7 +82,7 @@
             </div>
         </div>
         
-        <div class="kpi-card">
+        <a href="/attendance?start_date={{ date('Y-m-d') }}&end_date={{ date('Y-m-d') }}" class="kpi-card glass-card">
             <div class="kpi-icon green">
                 <i class="fas fa-user-check"></i>
             </div>
@@ -85,9 +90,9 @@
                 <h3>{{ __('Present Today') }}</h3>
                 <div class="value">{{ number_format($presentToday) }}</div>
             </div>
-        </div>
+        </a>
 
-        <div class="kpi-card">
+        <a href="/reports/absence?mode=day&date={{ date('Y-m-d') }}" class="kpi-card glass-card">
             <div class="kpi-icon red">
                 <i class="fas fa-user-times"></i>
             </div>
@@ -95,9 +100,9 @@
                 <h3>{{ __('Absent Today') }}</h3>
                 <div class="value">{{ number_format($absentToday) }}</div>
             </div>
-        </div>
+        </a>
 
-        <div class="kpi-card">
+        <div class="kpi-card glass-card">
             <div class="kpi-icon purple">
                 <i class="fas fa-satellite-dish"></i>
             </div>
@@ -112,10 +117,10 @@
     <div class="dashboard-layout">
         
         <!-- Left Column: Recent Punches -->
-        <div class="section-card">
+        <div class="section-card glass-card" style="overflow: hidden;">
             <div class="section-header">
                 <h2 class="section-title"><i class="fas fa-clock text-blue-400"></i> {{ __('Recent Punches') }}</h2>
-                <a href="/attendance" class="btn-primary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 6px; text-decoration: none; color: white;">{{ __('View All') }}</a>
+                <a href="/attendance" class="glass-btn" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 6px; text-decoration: none; color: white;">{{ __('View All') }}</a>
             </div>
             
             <div class="activity-list">
@@ -153,8 +158,8 @@
             </div>
         </div>
 
-        <!-- Right Column: Hardware Status -->
-        <div class="section-card">
+        <!-- Right Column: Connected Devices -->
+        <div class="section-card glass-card" style="overflow: hidden;">
             <div class="section-header">
                 <h2 class="section-title"><i class="fas fa-server text-purple-400"></i> {{ __('Hardware Status') }}</h2>
                 <a href="/devices" style="color: var(--text-muted); font-size: 0.9rem; text-decoration: none;"><i class="fas fa-cog"></i> {{ __('Manage') }}</a>
@@ -209,6 +214,24 @@
     </div>
 </div>
 
+@push('scripts')
+<script>
+    function updateLiveClock() {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute:'2-digit', second:'2-digit' });
+        const dateStr = now.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        
+        const clockEl = document.getElementById('live-clock');
+        const dateEl = document.getElementById('live-date');
+        
+        if(clockEl) clockEl.textContent = timeStr;
+        if(dateEl) dateEl.textContent = dateStr;
+    }
+    
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
+</script>
+@endpush
 @endsection
 
 

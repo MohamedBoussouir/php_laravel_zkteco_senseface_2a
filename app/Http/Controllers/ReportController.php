@@ -39,11 +39,19 @@ class ReportController extends Controller
         }
 
         $employeeId = $request->input('employee_id');
+        $search = $request->input('search');
 
         $employeesQuery = User::with(['workPattern.days', 'monthlyPattern.days']);
         if ($employeeId) {
             $employeesQuery->where('user_id', $employeeId);
         }
+        if ($search) {
+            $employeesQuery->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('user_id', 'like', "%{$search}%");
+            });
+        }
+        
         $employees = $employeesQuery->get();
         $allEmployees = User::select('user_id', 'name')->orderBy('name')->get();
         $schedules = Schedule::whereBetween('date', [$startDate, $endDate])->get();

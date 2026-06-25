@@ -54,55 +54,36 @@
     }
 
     .modal-content {
-        background: var(--sidebar-bg);
-        border: 1px solid var(--border-color);
         padding: 30px;
-        border-radius: 16px;
         width: 400px;
         text-align: center;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
     }
 
     .approve-btn {
-        background: var(--success);
+        background: linear-gradient(135deg, #10b981, #059669);
         color: white;
         border: none;
         padding: 10px 20px;
-        border-radius: 6px;
+        border-radius: 8px;
         cursor: pointer;
         font-weight: bold;
         margin-top: 15px;
+        transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
     }
+    .approve-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6); }
 
     .table-container {
-        background: var(--sidebar-bg);
-        border-radius: 12px;
-        border: 1px solid var(--border-color);
+        border-radius: 16px;
         overflow: hidden;
     }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        padding: 15px 20px;
-        text-align: left;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    th {
-        background: rgba(255,255,255,0.02);
-        color: var(--text-muted);
-        font-weight: 500;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-    }
-
-    td {
-        color: var(--text-main);
-    }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    th, td { padding: 15px 20px; text-align: left; }
+    th { background: rgba(0,0,0,0.3); color: var(--text-muted); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--glass-border); }
+    td { color: var(--text-main); font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.3s; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+    tr:last-child td { border-bottom: none; }
 </style>
 @endpush
 
@@ -115,7 +96,7 @@
     </button>
 </div>
 
-<div class="table-container">
+<div class="table-container glass-card">
     <table>
         <thead>
             <tr>
@@ -129,8 +110,27 @@
             @foreach($approvedDevices as $device)
             <tr>
                 <td><strong>{{ $device->sn }}</strong></td>
-                <td><span style="color: var(--success);"><i class="fas fa-check-circle"></i> {{ __('Approved') }}</span></td>
-                <td>{{ \Carbon\Carbon::parse($device->last_seen)->diffForHumans() }}</td>
+                <td>
+                    @php
+                        // Device is online if seen in the last 5 minutes (300 seconds)
+                        $isOnline = (time() - (int)$device->last_seen) < 300;
+                    @endphp
+                    @if($isOnline)
+                        <span style="color: #10b981; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; background: rgba(16,185,129,0.1); padding: 4px 10px; border-radius: 12px;">
+                            <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981;"></span>
+                            {{ __('Online') }}
+                        </span>
+                    @else
+                        <span style="color: #f43f5e; font-weight: bold; display: inline-flex; align-items: center; gap: 6px; background: rgba(244,63,94,0.1); padding: 4px 10px; border-radius: 12px;">
+                            <span style="width: 8px; height: 8px; background: #f43f5e; border-radius: 50%;"></span>
+                            {{ __('Offline') }}
+                        </span>
+                    @endif
+                </td>
+                <td>
+                    <div style="color: white;">{{ \Carbon\Carbon::createFromTimestamp((int)$device->last_seen)->diffForHumans() }}</div>
+                    <div style="color: var(--text-muted); font-size: 0.8rem;">{{ \Carbon\Carbon::createFromTimestamp((int)$device->last_seen)->format('Y-m-d H:i:s') }}</div>
+                </td>
                 <td>
                     <button onclick="removeDevice({{ $device->id }})" style="background: rgba(244,63,94,0.2); color: #f43f5e; border:none; padding: 5px 10px; border-radius:4px; cursor:pointer;">
                         {{ __('Remove') }}
@@ -151,7 +151,7 @@
 
 <!-- Modal -->
 <div id="pending-modal">
-    <div class="modal-content">
+    <div class="modal-content glass-card">
         <div style="font-size: 3rem; color: var(--warning); margin-bottom: 15px;">
             <i class="fas fa-exclamation-triangle"></i>
         </div>

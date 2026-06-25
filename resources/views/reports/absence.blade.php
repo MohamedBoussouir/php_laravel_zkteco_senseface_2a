@@ -9,17 +9,11 @@
         margin-bottom: 30px;
     }
     .kpi-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
         padding: 20px;
         display: flex;
         align-items: center;
         gap: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        transition: 0.3s;
     }
-    .kpi-card:hover { transform: translateY(-5px); }
     .kpi-icon {
         width: 60px;
         height: 60px;
@@ -33,39 +27,24 @@
     .kpi-info p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.85rem; }
 
     .filter-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 20px;
+        padding: 25px;
         margin-bottom: 30px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     
     .table-container {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--border-color); }
-    th { background: rgba(0,0,0,0.2); color: var(--text-muted); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    td { color: var(--text-main); font-size: 0.95rem; }
-    tr:hover td { background: rgba(255,255,255,0.02); }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    th, td { padding: 15px 20px; text-align: left; }
+    th { background: rgba(0,0,0,0.3); color: var(--text-muted); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--glass-border); }
+    td { color: var(--text-main); font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.3s; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
     
-    .form-control, .form-select { width: 100%; padding: 10px; background: rgba(0,0,0,0.2); color: white; border-radius: 6px; border: 1px solid var(--border-color); outline:none; }
-    .form-control:focus, .form-select:focus { border-color: var(--accent); }
-    
-    .btn { padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; transition: 0.2s;}
-    .btn-primary { background: var(--accent); color: white; }
-    .btn-primary:hover { filter: brightness(1.1); }
-    
-    .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; }
-    .badge-success { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-    .badge-danger { background: rgba(244, 63, 94, 0.2); color: #f43f5e; }
-    .badge-warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-    .badge-secondary { background: rgba(100, 116, 139, 0.2); color: #94a3b8; }
+    .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; }
+    .badge-success { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-danger { background: rgba(244, 63, 94, 0.2); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.4); }
+    .badge-warning { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-secondary { background: rgba(100, 116, 139, 0.2); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.4); }
     
     .details-row { background: rgba(0,0,0,0.15); display: none; }
     .details-row.active { display: table-row; }
@@ -82,11 +61,16 @@
 </div>
 
 <!-- Filters -->
-<div class="filter-card">
-    <form action="/reports/absence" method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: flex-end;">
+<div class="filter-card glass-card">
+    <form id="reportFilterForm" action="/reports/absence" method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: flex-end;">
+        <div style="grid-column: span 2;">
+            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Search Employee') }}</label>
+            <input id="autoSearchInput" type="text" name="search" class="glass-input" style="width:100%;" value="{{ request('search') }}" placeholder="{{ __('Search by name or ID...') }}">
+        </div>
+
         <div>
             <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Select Period Mode') }}</label>
-            <select name="mode" id="report-mode" class="form-select" onchange="toggleInputs(this.value)">
+            <select name="mode" id="report-mode" class="glass-input" style="width:100%;" onchange="toggleInputs(this.value)">
                 <option value="day" {{ $mode == 'day' ? 'selected' : '' }}>{{ __('Daily') }}</option>
                 <option value="month" {{ $mode == 'month' ? 'selected' : '' }}>{{ __('Monthly') }}</option>
                 <option value="year" {{ $mode == 'year' ? 'selected' : '' }}>{{ __('Yearly') }}</option>
@@ -96,44 +80,44 @@
 
         <div id="group-day" style="display: {{ $mode == 'day' ? 'block' : 'none' }};">
             <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Select Date') }}</label>
-            <input type="date" name="date" class="form-control" value="{{ $date }}">
+            <input type="date" name="date" class="glass-input" style="width:100%;" value="{{ $date }}">
         </div>
 
         <div id="group-month" style="display: {{ $mode == 'month' ? 'block' : 'none' }};">
             <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Select Month') }}</label>
-            <input type="month" name="month" class="form-control" value="{{ $month }}">
+            <input type="month" name="month" class="glass-input" style="width:100%;" value="{{ $month }}">
         </div>
 
         <div id="group-year" style="display: {{ $mode == 'year' ? 'block' : 'none' }};">
             <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Select Year') }}</label>
-            <input type="number" name="year" class="form-control" value="{{ $year }}" min="2000" max="2100">
+            <input type="number" name="year" class="glass-input" style="width:100%;" value="{{ $year }}" min="2000" max="2100">
         </div>
 
         <div id="group-range" style="display: {{ $mode == 'range' ? 'flex' : 'none' }}; gap: 10px; align-items: center; grid-column: span 2;">
             <div style="flex:1;">
                 <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('From Date') }}</label>
-                <input type="date" name="start_date" class="form-control" value="{{ $startDateParam }}">
+                <input type="date" name="start_date" class="glass-input" style="width:100%;" value="{{ $startDateParam }}">
             </div>
             <span style="color:var(--text-muted); padding-top:25px;">{{ __('to') }}</span>
             <div style="flex:1;">
                 <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('To Date') }}</label>
-                <input type="date" name="end_date" class="form-control" value="{{ $endDateParam }}">
+                <input type="date" name="end_date" class="glass-input" style="width:100%;" value="{{ $endDateParam }}">
             </div>
         </div>
 
         <div>
             <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Default Start Time') }}</label>
-            <input type="time" name="start_time" class="form-control" value="{{ $defaultStartTime }}">
+            <input type="time" name="start_time" class="glass-input" style="width:100%;" value="{{ $defaultStartTime }}">
         </div>
 
         <div>
             <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Default End Time') }}</label>
-            <input type="time" name="end_time" class="form-control" value="{{ $defaultEndTime }}">
+            <input type="time" name="end_time" class="glass-input" style="width:100%;" value="{{ $defaultEndTime }}">
         </div>
 
         <div>
-            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Employee') }}</label>
-            <select name="employee_id" class="form-select">
+            <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Employee (Dropdown)') }}</label>
+            <select name="employee_id" class="glass-input" style="width:100%;">
                 <option value="">{{ __('All Employees') }}</option>
                 @foreach($allEmployees as $emp)
                     <option value="{{ $emp->user_id }}" {{ ($employeeId ?? '') == $emp->user_id ? 'selected' : '' }}>{{ $emp->name }} ({{ $emp->user_id }})</option>
@@ -142,12 +126,12 @@
         </div>
 
         <div style="display: flex; gap: 10px; align-items: flex-end;">
-            <button type="submit" class="btn btn-primary" style="flex: 1; padding: 10px;">
+            <button type="submit" class="glass-btn" style="flex: 1; justify-content: center;">
                 <i class="fas fa-filter"></i> {{ __('Apply Filters') }}
             </button>
             
             <div style="position: relative; flex: 1;">
-                <button type="button" class="btn" style="width: 100%; padding: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);" onclick="document.getElementById('exportMenu').classList.toggle('show')">
+                <button type="button" class="glass-btn" style="width: 100%; justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); box-shadow: none;" onclick="document.getElementById('exportMenu').classList.toggle('show')">
                     <i class="fas fa-download"></i> {{ __('Export') }} <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>
                 </button>
                 <div id="exportMenu" class="dropdown-menu" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; margin-top: 5px; z-index: 100; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);">
@@ -165,7 +149,7 @@
 
 <!-- KPI Row -->
 <div class="stats-container">
-    <div class="kpi-card" style="border-left: 4px solid #10b981;">
+    <div class="kpi-card glass-card" style="border-left: 4px solid #10b981;">
         <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
             <i class="fas fa-percentage"></i>
         </div>
@@ -176,7 +160,7 @@
         </div>
     </div>
     
-    <div class="kpi-card" style="border-left: 4px solid #6366f1;">
+    <div class="kpi-card glass-card" style="border-left: 4px solid #6366f1;">
         <div class="kpi-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
             <i class="fas fa-user-check"></i>
         </div>
@@ -187,7 +171,7 @@
         </div>
     </div>
     
-    <div class="kpi-card" style="border-left: 4px solid #64748b;">
+    <div class="kpi-card glass-card" style="border-left: 4px solid #64748b;">
         <div class="kpi-icon" style="background: rgba(100, 116, 139, 0.1); color: #94a3b8;">
             <i class="fas fa-folder-open"></i>
         </div>
@@ -197,7 +181,7 @@
         </div>
     </div>
     
-    <div class="kpi-card" style="border-left: 4px solid #f43f5e;">
+    <div class="kpi-card glass-card" style="border-left: 4px solid #f43f5e;">
         <div class="kpi-icon" style="background: rgba(244, 63, 94, 0.1); color: #f43f5e;">
             <i class="fas fa-clock"></i>
         </div>
@@ -210,7 +194,7 @@
 </div>
 
 <!-- Table -->
-<div class="table-container" style="overflow-x: auto;">
+<div class="table-container glass-card" style="overflow-x: auto;">
     <table style="min-width: 900px;">
         <thead>
             @if($mode === 'day')
@@ -250,22 +234,22 @@
                         <td><span style="background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px;">{{ $row['expected'] }}</span></td>
                         <td>
                             @if($row['status'] == 'Late')
-                                <span class="badge badge-danger">{{ __('Late') }} 🔴</span>
+                                <span class="badge badge-danger"><i class="fas fa-exclamation-circle"></i> {{ __('Late') }}</span>
                             @elseif($row['status'] == 'On Time')
-                                <span class="badge badge-success">{{ __('On Time') }} 🟢</span>
+                                <span class="badge badge-success"><i class="fas fa-check-circle"></i> {{ __('On Time') }}</span>
                             @elseif($row['status'] == 'Absent')
-                                <span class="badge badge-secondary">{{ __('Absent') }} 📁</span>
+                                <span class="badge badge-secondary"><i class="fas fa-folder-open"></i> {{ __('Absent') }}</span>
                             @elseif($row['status'] == 'Invalid Punch')
-                                <span class="badge badge-warning">{{ __('Invalid Punch') }} ⚠️</span>
+                                <span class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i> {{ __('Invalid Punch') }}</span>
                             @else
-                                <span class="badge" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8;">{{ __('Off Day') }} 🔵</span>
+                                <span class="badge" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4);"><i class="fas fa-bed"></i> {{ __('Off Day') }}</span>
                             @endif
                         </td>
                         <td style="{{ $row['status'] == 'Late' ? 'color:#f43f5e; font-weight:bold;' : '' }}">{{ $row['delay'] }}</td>
                         <td>{{ $row['worked'] }}</td>
                         <td>
-                            <button class="btn" style="background: rgba(255,255,255,0.1); padding: 6px 10px; font-size: 0.8rem;" onclick="toggleDetails({{ $index }})">
-                                {{ __('Details') }}
+                            <button class="glass-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleDetails({{ $index }})">
+                                <i class="fas fa-list"></i> {{ __('Details') }}
                             </button>
                         </td>
                     </tr>
@@ -282,8 +266,8 @@
                         <td style="{{ $row['totalDelayMins'] > 0 ? 'color:#f43f5e; font-weight:bold;' : '' }}">{{ $row['totalDelayMins'] }} {{ __('mins') }}</td>
                         <td>{{ number_format($row['totalWorkedHrs'], 1) }} {{ __('hrs') }}</td>
                         <td>
-                            <button class="btn" style="background: rgba(255,255,255,0.1); padding: 6px 10px; font-size: 0.8rem;" onclick="toggleDetails({{ $index }})">
-                                {{ __('Details') }}
+                            <button class="glass-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleDetails({{ $index }})">
+                                <i class="fas fa-list"></i> {{ __('Details') }}
                             </button>
                         </td>
                     </tr>
@@ -317,9 +301,9 @@
                                             <td>{{ $daily['worked'] }}</td>
                                             <td>
                                                 @if($daily['status'] == 'Late')
-                                                    <span style="color:#f43f5e;"><i class="fas fa-circle" style="font-size:8px;"></i> {{ __('Late') }}</span>
+                                                    <span class="badge badge-danger"><i class="fas fa-exclamation-circle"></i> {{ __('Late') }}</span>
                                                 @elseif($daily['status'] == 'On Time')
-                                                    <span style="color:#34d399;"><i class="fas fa-circle" style="font-size:8px;"></i> {{ __('On Time') }}</span>
+                                                    <span class="badge badge-success"><i class="fas fa-check-circle"></i> {{ __('On Time') }}</span>
                                                 @elseif($daily['status'] == 'Absent')
                                                     <span style="color:#94a3b8;"><i class="fas fa-circle" style="font-size:8px;"></i> {{ __('Absent') }}</span>
                                                 @elseif($daily['status'] == 'Invalid Punch')
@@ -351,36 +335,58 @@
 
 @push('scripts')
 <script>
-function toggleInputs(mode) {
-    document.getElementById('group-day').style.display = 'none';
-    document.getElementById('group-month').style.display = 'none';
-    document.getElementById('group-year').style.display = 'none';
-    document.getElementById('group-range').style.display = 'none';
+    function toggleInputs(mode) {
+        document.getElementById('group-day').style.display = 'none';
+        document.getElementById('group-month').style.display = 'none';
+        document.getElementById('group-year').style.display = 'none';
+        document.getElementById('group-range').style.display = 'none';
+        
+        if(mode === 'day') document.getElementById('group-day').style.display = 'block';
+        if(mode === 'month') document.getElementById('group-month').style.display = 'block';
+        if(mode === 'year') document.getElementById('group-year').style.display = 'block';
+        if(mode === 'range') document.getElementById('group-range').style.display = 'flex';
+    }
+
+    function toggleDetails(index) {
+        const row = document.getElementById('details-' + index);
+        if (row.classList.contains('active')) {
+            row.classList.remove('active');
+        } else {
+            row.classList.add('active');
+        }
+    }
     
-    if(mode === 'day') document.getElementById('group-day').style.display = 'block';
-    if(mode === 'month') document.getElementById('group-month').style.display = 'block';
-    if(mode === 'year') document.getElementById('group-year').style.display = 'block';
-    if(mode === 'range') {
-        document.getElementById('group-range').style.display = 'flex';
-    }
-}
+    // Auto Search Script
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('autoSearchInput');
+        const searchForm = document.getElementById('reportFilterForm');
+        let debounceTimer;
 
-function toggleDetails(index) {
-    const el = document.getElementById('details-' + index);
-    if(el.classList.contains('active')) {
-        el.classList.remove('active');
-    } else {
-        el.classList.add('active');
-    }
-}
+        if (searchInput) {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (searchInput.value || urlParams.has('search')) {
+                searchInput.focus();
+                const val = searchInput.value;
+                searchInput.value = '';
+                searchInput.value = val;
+            }
 
-// Close dropdown when clicking outside
-document.addEventListener('click', function(event) {
-    var menu = document.getElementById('exportMenu');
-    if (menu && menu.classList.contains('show') && !event.target.closest('.dropdown-menu') && !event.target.closest('button[onclick*="exportMenu"]')) {
-        menu.classList.remove('show');
-    }
-});
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    searchForm.submit();
+                }, 800); // 800ms for reports as they are heavy
+            });
+        }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        var menu = document.getElementById('exportMenu');
+        if (menu && menu.classList.contains('show') && !event.target.closest('.dropdown-menu') && !event.target.closest('button[onclick*="exportMenu"]')) {
+            menu.classList.remove('show');
+        }
+    });
 </script>
 <style>
     .dropdown-menu.show { display: block !important; }

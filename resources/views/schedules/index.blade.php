@@ -11,11 +11,10 @@
         .grid-container { grid-template-columns: 1fr; }
     }
     .card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        background: transparent;
+        border: none;
+        padding: 0;
+        box-shadow: none;
     }
     .card-header {
         display: flex;
@@ -27,27 +26,26 @@
     }
     .card-title { font-size: 1.2rem; font-weight: 600; color: white; display: flex; align-items: center; gap: 10px;}
     .list-item {
-        background: rgba(0,0,0,0.2);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 12px;
         padding: 15px;
         margin-bottom: 10px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        transition: 0.2s;
+        transition: 0.3s;
     }
     .list-item:hover {
-        border-color: rgba(255,255,255,0.2);
-        background: rgba(0,0,0,0.3);
+        border-color: rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.05);
+        transform: translateX(5px);
     }
     .item-info h4 { margin: 0 0 5px 0; color: white; }
     .item-info p { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
     
-    .btn { padding: 8px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-size: 0.9rem; }
-    .btn-primary { background: var(--accent); color: white; }
-    .btn-outline { background: transparent; color: white; border: 1px solid var(--border-color); }
-    .btn-outline:hover { background: rgba(255,255,255,0.05); }
+    .btn { padding: 8px 15px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-size: 0.9rem; transition: 0.3s; }
+
     .action-btn { width: 32px; height: 32px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; color: white; border: none; cursor: pointer; text-decoration: none; font-size: 0.9rem; }
     .btn-blue { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
     .btn-blue:hover { background: rgba(59, 130, 246, 0.4); }
@@ -58,12 +56,13 @@
     .btn-yellow { background: rgba(234, 179, 8, 0.2); color: #facc15; }
     .btn-yellow:hover { background: rgba(234, 179, 8, 0.4); }
 
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; }
-    .modal-content { background: var(--sidebar-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color); width: 450px; max-width: 90%; }
-    .modal-content h3 { margin-top: 0; color: white; margin-bottom: 20px;}
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; }
+    .modal-content { background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--glass-border); width: 450px; max-width: 90%; backdrop-filter: blur(16px); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
+    .modal-content h3 { margin-top: 0; color: white; margin-bottom: 20px; font-weight: 700; }
     .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.9rem; }
-    .form-control { width: 100%; padding: 10px; background: rgba(0,0,0,0.2); color: white; border-radius: 6px; border: 1px solid var(--border-color); }
+    .form-group label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
+    .form-control { width: 100%; padding: 10px 15px; background: rgba(0,0,0,0.2); color: white; border-radius: 10px; border: 1px solid var(--glass-border); transition: 0.3s; outline: none; }
+    .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); background: rgba(0,0,0,0.3); }
     
     .day-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .day-row:last-child { border-bottom: none; }
@@ -85,10 +84,10 @@
 
 <div class="grid-container">
     <!-- SHIFTS SECTION -->
-    <div class="card">
+    <div class="card glass-card">
         <div class="card-header">
             <div class="card-title"><i class="fas fa-clock text-blue-400"></i> {{ __('Time Shifts') }}</div>
-            <button class="btn btn-primary" onclick="document.getElementById('addShiftModal').style.display='flex'">
+            <button class="glass-btn" onclick="document.getElementById('addShiftModal').style.display='flex'">
                 <i class="fas fa-plus"></i> {{ __('Add Shift') }}
             </button>
         </div>
@@ -109,16 +108,19 @@
                 </div>
             </div>
             @empty
-            <div style="text-align:center; padding: 20px; color: var(--text-muted);">No shifts defined.</div>
+            <div class="empty-state">
+                <i class="fas fa-clock"></i>
+                <p>{{ __('No shifts found.') }}</p>
+            </div>
             @endforelse
         </div>
     </div>
 
     <!-- WORK PATTERNS SECTION -->
-    <div class="card">
+    <div class="card glass-card">
         <div class="card-header">
             <div class="card-title"><i class="fas fa-layer-group text-blue-400"></i> {{ __('Work Patterns') }}</div>
-            <button class="btn btn-primary" onclick="document.getElementById('addPatternModal').style.display='flex'">
+            <button class="glass-btn" onclick="document.getElementById('addPatternModal').style.display='flex'">
                 <i class="fas fa-plus"></i> {{ __('Add Pattern') }}
             </button>
         </div>
@@ -167,8 +169,8 @@
                         @endfor
 
                         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top: 20px;">
-                            <button type="button" class="btn btn-outline" onclick="document.getElementById('configPatternModal{{ $pattern->id }}').style.display='none'">{{ __('Cancel') }}</button>
-                            <button type="submit" class="btn btn-primary">{{ __('Save Configuration') }}</button>
+                            <button type="button" class="glass-btn" style="background: transparent; border: 1px solid var(--glass-border);" onclick="document.getElementById('configPatternModal{{ $pattern->id }}').style.display='none'">{{ __('Cancel') }}</button>
+                            <button type="submit" class="glass-btn">{{ __('Save Configuration') }}</button>
                         </div>
                     </form>
                 </div>
@@ -194,25 +196,28 @@
                         </div>
 
                         <div style="display:flex; justify-content:flex-end; gap:10px;">
-                            <button type="button" class="btn btn-outline" onclick="document.getElementById('assignPatternModal{{ $pattern->id }}').style.display='none'">{{ __('Cancel') }}</button>
-                            <button type="submit" class="btn btn-primary">{{ __('Save Assignments') }}</button>
+                            <button type="button" class="glass-btn" style="background: transparent; border: 1px solid var(--glass-border);" onclick="document.getElementById('assignPatternModal{{ $pattern->id }}').style.display='none'">{{ __('Cancel') }}</button>
+                            <button type="submit" class="glass-btn">{{ __('Save Assignments') }}</button>
                         </div>
                     </form>
                 </div>
             </div>
 
             @empty
-            <div style="text-align:center; padding: 20px; color: var(--text-muted);">No work patterns defined.</div>
+            <div class="empty-state">
+                <i class="fas fa-layer-group"></i>
+                <p>{{ __('No work patterns defined.') }}</p>
+            </div>
             @endforelse
         </div>
     </div>
 </div>
 
 <div style="margin-top: 20px;">
-    <div class="card">
+    <div class="card glass-card">
         <div class="card-header">
             <div class="card-title"><i class="fas fa-calendar-days text-blue-400"></i> {{ __('Monthly Work Patterns (31 Days)') }}</div>
-            <button class="btn btn-primary" onclick="document.getElementById('addMonthlyPatternModal').style.display='flex'">
+            <button class="glass-btn" onclick="document.getElementById('addMonthlyPatternModal').style.display='flex'">
                 <i class="fas fa-plus"></i> {{ __('Add Monthly Pattern') }}
             </button>
         </div>
@@ -265,8 +270,8 @@
                         </div>
 
                         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top: 20px;">
-                            <button type="button" class="btn btn-outline" onclick="document.getElementById('configMonthlyPatternModal{{ $pattern->id }}').style.display='none'">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Configuration</button>
+                            <button type="button" class="glass-btn" style="background: transparent; border: 1px solid var(--glass-border);" onclick="document.getElementById('configMonthlyPatternModal{{ $pattern->id }}').style.display='none'">Cancel</button>
+                            <button type="submit" class="glass-btn">Save Configuration</button>
                         </div>
                     </form>
                 </div>
@@ -292,8 +297,8 @@
                         </div>
 
                         <div style="display:flex; justify-content:flex-end; gap:10px;">
-                            <button type="button" class="btn btn-outline" onclick="document.getElementById('assignMonthlyPatternModal{{ $pattern->id }}').style.display='none'">Cancel</button>
-                            <button type="submit" class="btn btn-primary">Save Assignments</button>
+                            <button type="button" class="glass-btn" style="background: transparent; border: 1px solid var(--glass-border);" onclick="document.getElementById('assignMonthlyPatternModal{{ $pattern->id }}').style.display='none'">Cancel</button>
+                            <button type="submit" class="glass-btn">Save Assignments</button>
                         </div>
                     </form>
                 </div>
@@ -329,8 +334,8 @@
                 </div>
             </div>
             <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button type="button" class="btn btn-outline" onclick="document.getElementById('addShiftModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create Shift</button>
+                <button type="button" class="glass-btn" style="background: transparent; border: 1px solid var(--glass-border);" onclick="document.getElementById('addShiftModal').style.display='none'">Cancel</button>
+                <button type="submit" class="glass-btn">Create Shift</button>
             </div>
         </form>
     </div>
@@ -357,8 +362,8 @@
                 </div>
             </div>
             <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button type="button" class="btn btn-outline" onclick="document.getElementById('editShiftModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Update Shift</button>
+                <button type="button" class="glass-btn" style="background: transparent; border: 1px solid var(--glass-border);" onclick="document.getElementById('editShiftModal').style.display='none'">Cancel</button>
+                <button type="submit" class="glass-btn">Update Shift</button>
             </div>
         </form>
     </div>
@@ -375,8 +380,8 @@
                 <input type="text" name="name" class="form-control" required>
             </div>
             <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button type="button" class="btn btn-outline" onclick="document.getElementById('addPatternModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create Pattern</button>
+                <button type="button" class="glass-btn" style="background: transparent; border: 1px solid var(--glass-border);" onclick="document.getElementById('addPatternModal').style.display='none'">Cancel</button>
+                <button type="submit" class="glass-btn">Create Pattern</button>
             </div>
         </form>
     </div>
@@ -393,8 +398,8 @@
                 <input type="text" id="edit_pattern_name" name="name" class="form-control" required>
             </div>
             <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button type="button" class="btn btn-outline" onclick="document.getElementById('editPatternModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Update Pattern</button>
+                <button type="button" class="glass-btn" style="background: transparent; border: 1px solid var(--glass-border);" onclick="document.getElementById('editPatternModal').style.display='none'">Cancel</button>
+                <button type="submit" class="glass-btn">Update Pattern</button>
             </div>
         </form>
     </div>
@@ -411,8 +416,8 @@
                 <input type="text" name="name" class="form-control" required>
             </div>
             <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button type="button" class="btn btn-outline" onclick="document.getElementById('addMonthlyPatternModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create Monthly Pattern</button>
+                <button type="button" class="glass-btn" style="background: transparent; border: 1px solid var(--glass-border);" onclick="document.getElementById('addMonthlyPatternModal').style.display='none'">Cancel</button>
+                <button type="submit" class="glass-btn">Create Monthly Pattern</button>
             </div>
         </form>
     </div>
@@ -429,8 +434,8 @@
                 <input type="text" id="edit_monthly_pattern_name" name="name" class="form-control" required>
             </div>
             <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button type="button" class="btn btn-outline" onclick="document.getElementById('editMonthlyPatternModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Update Pattern</button>
+                <button type="button" class="glass-btn" style="background: transparent; border: 1px solid var(--glass-border);" onclick="document.getElementById('editMonthlyPatternModal').style.display='none'">Cancel</button>
+                <button type="submit" class="glass-btn">Update Pattern</button>
             </div>
         </form>
     </div>
