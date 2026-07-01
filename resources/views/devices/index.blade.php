@@ -55,7 +55,8 @@
 
     .modal-content {
         padding: 30px;
-        width: 400px;
+        width: 90%;
+        max-width: 400px;
         text-align: center;
     }
 
@@ -75,15 +76,21 @@
 
     .table-container {
         border-radius: 16px;
-        overflow: hidden;
+        overflow-x: auto;
     }
 
-    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 600px; }
     th, td { padding: 15px 20px; text-align: left; }
     th { background: rgba(0,0,0,0.3); color: var(--text-muted); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--glass-border); }
     td { color: var(--text-main); font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.3s; }
     tr:hover td { background: rgba(255,255,255,0.03); }
     tr:last-child td { border-bottom: none; }
+
+    @media (max-width: 768px) {
+        .top-bar { flex-direction: column; gap: 15px; align-items: stretch; text-align: center; }
+        .listen-btn { justify-content: center; }
+        .table-container { border-radius: 8px; }
+    }
 </style>
 @endpush
 

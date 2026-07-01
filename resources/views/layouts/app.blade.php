@@ -271,10 +271,70 @@
             background: linear-gradient(135deg, var(--accent), #6366f1); color: white; border: none; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
         }
 
+        /* Mobile Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 90;
+        }
+        .mobile-overlay.active { display: block; }
+
+        /* Mobile Header */
+        .mobile-header {
+            display: none;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 80;
+        }
+        .mobile-header .brand { border-bottom: none; padding: 0; font-size: 1.2rem; }
+        .mobile-toggle { font-size: 1.5rem; color: var(--text-main); cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .mobile-header { display: flex; }
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px !important;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            .sidebar-toggle { display: none; }
+            
+            .main-content {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                width: 100% !important;
+                max-width: 100vw !important;
+                padding: 15px;
+            }
+            
+            [dir="rtl"] .sidebar { transform: translateX(100%); }
+            [dir="rtl"] .sidebar.mobile-open { transform: translateX(0); }
+            
+            .page-title { font-size: 1.8rem; }
+            
+            #sip-call-modal .glass-card { padding: 25px; width: 95%; }
+            #sip-remote-iframe { height: 250px; }
+            #sip-call-modal button { padding: 10px; font-size: 0.9rem; }
+        }
     </style>
     @stack('styles')
 </head>
 <body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobileMenu()"></div>
+
 
     <div class="sidebar" id="sidebar">
         <div class="brand">
@@ -340,11 +400,26 @@
     </div>
 
     <div class="main-content" id="main-content" dir="{{ session('locale') == 'ar' ? 'rtl' : 'ltr' }}">
+        <!-- Mobile Header -->
+        <div class="mobile-header">
+            <div class="brand">
+                <i class="fas fa-fingerprint main-icon"></i>
+                <span class="brand-text">SenseFace ADMS</span>
+            </div>
+            <div class="mobile-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+
         @yield('content')
     </div>
 
     <script>
         function toggleSidebar() {
+            if (window.innerWidth <= 768) {
+                toggleMobileMenu();
+                return;
+            }
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('main-content');
             sidebar.classList.toggle('collapsed');
@@ -352,6 +427,13 @@
             
             // Save state
             localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed'));
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            sidebar.classList.toggle('mobile-open');
+            overlay.classList.toggle('active');
         }
         
         // Load state

@@ -17,6 +17,11 @@
     @media (max-width: 1024px) {
         .dashboard-layout { grid-template-columns: 1fr; }
     }
+    @media (max-width: 768px) {
+        .dash-header { flex-direction: column !important; gap: 15px; }
+        .kpi-grid { grid-template-columns: 1fr; }
+        .section-header { flex-direction: column; gap: 10px; align-items: flex-start !important; }
+    }
 
     /* Section Cards */
     .section-header { padding: 24px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); }
@@ -59,7 +64,7 @@
 @section('content')
 
 <div class="container">
-    <div class="header" style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;">
+    <div class="dash-header" style="margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
             <h1><i class="fas fa-chart-pie" style="color: var(--accent);"></i> {{ __('Dashboard') }}</h1>
             <p>{{ __('Overview of Human Resources & Hardware') }}</p>

@@ -150,6 +150,13 @@
             align-items: center;
             gap: 8px;
         }
+
+        @media (max-width: 480px) {
+            .login-card { padding: 25px; }
+            .logo-icon { font-size: 2.5rem; }
+            .logo-title { font-size: 1.3rem; }
+            .btn-login { padding: 12px; }
+        }
     </style>
 </head>
 <body>

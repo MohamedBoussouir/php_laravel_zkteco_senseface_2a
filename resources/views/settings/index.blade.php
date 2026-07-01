@@ -31,7 +31,7 @@
 
             <div style="margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted);">{{ __('Sync Type') }}</label>
-                <div style="display: flex; gap: 20px;">
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                         <input type="radio" name="sync_type" value="auto" checked onchange="toggleManualTime(this.value)">
                         {{ __('Automatic (Sync with server time)') }}

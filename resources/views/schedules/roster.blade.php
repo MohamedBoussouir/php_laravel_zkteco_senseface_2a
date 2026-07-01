@@ -123,6 +123,17 @@
     .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; }
     .modal-content { padding: 30px; width: 400px; max-width: 90%; }
     .form-control { width: 100%; padding: 10px; background: rgba(0,0,0,0.2); color: white; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 15px;}
+
+    @media (max-width: 768px) {
+        .split-layout { flex-direction: column; height: auto; gap: 15px; }
+        .employee-panel { width: 100%; max-height: 300px; }
+        .calendar-grid { grid-template-columns: repeat(7, minmax(40px, 1fr)); overflow-x: auto; }
+        .calendar-panel { overflow-x: auto; }
+        .top-bar form { flex-direction: column; width: 100%; align-items: stretch !important; }
+        .top-bar form select, .top-bar form a { width: 100% !important; text-align: center; justify-content: center; }
+        .top-bar { flex-direction: column; align-items: flex-start !important; gap: 15px; }
+        .calendar-header { flex-direction: column; gap: 10px; text-align: center; }
+    }
 </style>
 @endpush
 

@@ -10,6 +10,12 @@
     @media (max-width: 1024px) {
         .grid-container { grid-template-columns: 1fr; }
     }
+    @media (max-width: 768px) {
+        .card-header { flex-direction: column; align-items: flex-start !important; gap: 15px; }
+        .list-item { flex-direction: column; align-items: flex-start !important; gap: 15px; }
+        .monthly-grid { grid-template-columns: 1fr !important; }
+        .modal-content { width: 95% !important; padding: 20px !important; }
+    }
     .card {
         background: transparent;
         border: none;
@@ -252,7 +258,7 @@
                     <h3><i class="fas fa-cog text-blue-400"></i> Configure: {{ $pattern->name }} (31 Days)</h3>
                     <form action="/schedules/monthly-patterns/{{ $pattern->id }}/days" method="POST">
                         @csrf
-                        <div style="max-height: 400px; overflow-y: auto; padding-right: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <div class="monthly-grid" style="max-height: 400px; overflow-y: auto; padding-right: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
                             @for($i = 1; $i <= 31; $i++)
                                 @php
                                     $currentShift = $pattern->days->where('day_of_month', $i)->first()?->shift_id;

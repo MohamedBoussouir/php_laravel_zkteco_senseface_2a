@@ -24,6 +24,12 @@
     .col-actions { display: flex; gap: 8px; flex: 1; justify-content: flex-end; min-width: 250px; flex-wrap: wrap; }
     
     .alert { padding: 15px; border-radius: 8px; margin-bottom: 20px; background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    @media (max-width: 768px) {
+        .user-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .col-profile, .col-badges, .col-actions { min-width: 100%; width: 100%; justify-content: flex-start; }
+        .col-actions { justify-content: flex-start; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
+    }
 </style>
 @endpush
 

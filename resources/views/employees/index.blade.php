@@ -66,9 +66,16 @@
         border: 1px solid transparent;
     }
     .schedule-text:hover {
-        color: #fff;
-        background: rgba(59, 130, 246, 0.5);
         border-color: rgba(59, 130, 246, 0.8);
+    }
+
+    @media (max-width: 768px) {
+        .user-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .col-profile, .col-badges, .col-indicators, .col-actions { min-width: 100%; width: 100%; justify-content: flex-start; }
+        .col-actions { justify-content: flex-start; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
+        .action-btn { width: 36px; height: 36px; } /* Slightly larger touch targets */
+        .glass-card { padding: 20px !important; }
+        #filterDropdown { width: 100%; right: 0; }
     }
 </style>
 @endpush
@@ -113,13 +120,13 @@
         </form>
     </div>
 
-    <div style="display: flex; gap: 10px;">
-        <form action="/employees/fetch-from-device" method="POST">
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; width: 100%;">
+        <form action="/employees/fetch-from-device" method="POST" style="flex: 1; min-width: 140px;">
             @csrf
-            <button type="submit" class="btn-text" style="background: rgba(16, 185, 129, 0.2); color: #10b981;"><i class="fas fa-download"></i> {{ __('Fetch from Device') }}</button>
+            <button type="submit" class="btn-text" style="background: rgba(16, 185, 129, 0.2); color: #10b981; width: 100%; justify-content: center;"><i class="fas fa-download"></i> {{ __('Fetch') }}</button>
         </form>
-        <a href="/employees/archived" class="btn-text" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);"><i class="fas fa-trash-restore"></i> {{ __('Archived Employees') }}</a>
-        <a href="/employees/create" class="glass-btn"><i class="fas fa-user-plus"></i> {{ __('Add Employee') }}</a>
+        <a href="/employees/archived" class="btn-text" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); flex: 1; min-width: 140px; justify-content: center;"><i class="fas fa-trash-restore"></i> {{ __('Archived') }}</a>
+        <a href="/employees/create" class="glass-btn" style="flex: 1; min-width: 140px; justify-content: center;"><i class="fas fa-user-plus"></i> {{ __('Add') }}</a>
     </div>
 </div>
 
@@ -277,7 +284,7 @@
             </form>
             
             <div style="display:flex; justify-content:center; margin-top: 20px;">
-                <button type="button" class="btn-text" style="background:transparent; color:white; border:1px solid var(--border-color);" onclick="document.getElementById('fpForm{{ $employee->id }}').style.display='none'">Close</button>
+                <button type="button" class="btn-text" style="background:transparent; color:white; border:1px solid var(--border-color); width:100%;" onclick="document.getElementById('fpForm{{ $employee->id }}').style.display='none'">Close</button>
             </div>
         </div>
     </div>

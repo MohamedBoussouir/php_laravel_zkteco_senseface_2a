@@ -51,6 +51,15 @@
     .details-table { margin: 10px 0; border: 1px solid rgba(255,255,255,0.05); }
     .details-table th { background: rgba(0,0,0,0.3); font-size: 0.75rem; padding: 10px; }
     .details-table td { font-size: 0.85rem; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+    @media (max-width: 1024px) {
+        .stats-container { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+        .stats-container { grid-template-columns: 1fr; }
+        .top-bar { flex-direction: column; align-items: flex-start !important; gap: 15px; }
+        .filter-card { padding: 15px; }
+    }
 </style>
 @endpush
 

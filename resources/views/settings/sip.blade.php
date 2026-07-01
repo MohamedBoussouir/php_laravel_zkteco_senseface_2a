@@ -15,6 +15,14 @@
     
     .alert-warning { background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.3); padding: 15px; border-radius: 12px; color: #facc15; margin-bottom: 20px; display: flex; gap: 15px; align-items: flex-start; }
 
+    @media (max-width: 768px) {
+        .setting-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+        .setting-label { width: 100%; margin-bottom: 5px; }
+        .setting-value { width: 100%; text-align: center; }
+        .alert-warning { flex-direction: column; align-items: center; text-align: center; }
+        .alert-warning i { margin-top: 0; font-size: 1.5rem; }
+    }
+
 </style>
 @endpush
 
