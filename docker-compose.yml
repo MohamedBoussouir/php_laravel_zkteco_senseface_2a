@@ -1,6 +1,51 @@
 version: '3.7'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8001:80"
+    volumes:
+      - .:/var/www/html
+      - vendor_data:/var/www/html/vendor
+    depends_on:
+      - db
+    networks:
+      - laravel
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: zkteco_senseface_2a
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - laravel
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8090:80"
+    depends_on:
+      - db
+    networks:
+      - laravel
+
   asterisk:
     image: andrius/asterisk:latest
     container_name: asterisk_pbx
@@ -16,6 +61,8 @@ services:
       - ./asterisk_config/http.conf:/etc/asterisk/http.conf
       - ./asterisk_config/rtp.conf:/etc/asterisk/rtp.conf
     restart: unless-stopped
+    networks:
+      - laravel
 
   mediamtx:
     image: bluenviron/mediamtx:latest-ffmpeg
@@ -29,3 +76,13 @@ services:
       - MTX_PATHS_ZKTECO_RUNONINIT=ffmpeg -rtsp_transport tcp -i rtsp://192.168.0.105:8554/stream -c:v copy -f rtsp rtsp://localhost:8554/zkteco
       - MTX_PATHS_ZKTECO_RUNONINITRESTART=yes
     restart: unless-stopped
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge
+
+volumes:
+  dbdata:
+  vendor_data:
