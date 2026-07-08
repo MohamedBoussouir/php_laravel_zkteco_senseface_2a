@@ -85,7 +85,7 @@
 <div class="top-bar" style="flex-wrap: wrap; gap: 15px;">
     <h1 class="page-title"><i class="fas fa-users"></i> {{ __('Employees Directory') }}</h1>
     
-    <div class="search-container" style="flex-grow: 1; max-width: 500px; min-width: 200px; position: relative;">
+    <div class="search-container" style="flex-grow: 1; max-width: 500px; min-width: 200px; position: relative; z-index: 999;">
         <form id="autoSearchForm" action="/employees" method="GET" style="display: flex; flex-direction: column; width: 100%; gap: 10px;">
             <div style="display: flex; width: 100%; gap: 5px;">
                 <input id="autoSearchInput" type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Search by name or ID...') }}" class="glass-input" style="flex-grow: 1;">
@@ -226,7 +226,7 @@
     </div>
 
     <!-- Fingerprint Modal -->
-    <div id="fpForm{{ $employee->id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index:9999; align-items:center; justify-content:center;">
+    <div id="fpForm{{ $employee->id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8);  z-index:9999; align-items:center; justify-content:center;">
         <div class="glass-card" style="padding:30px; width: 400px; max-width: 90%;">
             <h3 style="margin-top:0; color:white;"><i class="fas fa-fingerprint text-blue-400"></i> Manage Fingerprints for {{ $employee->name }}</h3>
             
@@ -290,7 +290,7 @@
     </div>
 
     <!-- Upload Photo Modal -->
-    <div id="photoForm{{ $employee->id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index:9999; align-items:center; justify-content:center;">
+    <div id="photoForm{{ $employee->id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8);  z-index:9999; align-items:center; justify-content:center;">
         <div class="glass-card" style="padding:30px; width: 450px; max-width: 90%;">
             <h3 style="margin-top:0; color:white;"><i class="fas fa-camera text-purple-400"></i> Upload Photo for {{ $employee->name }}</h3>
             
@@ -354,7 +354,7 @@
     </div>
 
     <!-- Quick Credentials Modal -->
-    <div id="credForm{{ $employee->id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index:9999; align-items:center; justify-content:center;">
+    <div id="credForm{{ $employee->id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8);  z-index:9999; align-items:center; justify-content:center;">
         <div class="glass-card" style="padding:30px; width: 400px; max-width: 90%;">
             <h3 style="margin-top:0; color:white;"><i class="fas fa-key text-yellow-400"></i> Credentials for {{ $employee->name }}</h3>
             <form action="/employees/{{ $employee->id }}/credentials" method="POST">
@@ -377,7 +377,7 @@
     </div>
 
     <!-- Work Pattern Modal -->
-    <div id="wpForm{{ $employee->id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index:9999; align-items:center; justify-content:center;">
+    <div id="wpForm{{ $employee->id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8);  z-index:9999; align-items:center; justify-content:center;">
         <div class="glass-card" style="padding:30px; width: 400px; max-width: 90%;">
             <h3 style="margin-top:0; color:white;"><i class="fas fa-calendar-alt text-blue-400"></i> Set Schedule for {{ $employee->name }}</h3>
             <form action="/employees/{{ $employee->id }}/work-pattern" method="POST">
@@ -409,7 +409,7 @@
     </div>
 
     <!-- Edit Employee Modal -->
-    <div id="editForm{{ $employee->id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index:9999; align-items:center; justify-content:center;">
+    <div id="editForm{{ $employee->id }}" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8);  z-index:9999; align-items:center; justify-content:center;">
         <div class="glass-card" style="padding:30px; width: 450px; max-width: 90%;">
             <h3 style="margin-top:0; color:white;"><i class="fas fa-edit text-blue-400"></i> Edit Employee</h3>
             <form action="/employees/{{ $employee->id }}/update" method="POST">

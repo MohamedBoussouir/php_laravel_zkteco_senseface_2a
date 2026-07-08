@@ -62,8 +62,8 @@
     .btn-yellow { background: rgba(234, 179, 8, 0.2); color: #facc15; }
     .btn-yellow:hover { background: rgba(234, 179, 8, 0.4); }
 
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; }
-    .modal-content { background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--glass-border); width: 450px; max-width: 90%; backdrop-filter: blur(16px); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95);  z-index: 9999; align-items: center; justify-content: center; }
+    .modal-content { background: var(--card-bg); padding: 30px; border-radius: 16px; border: 1px solid var(--glass-border); width: 450px; max-width: 90%;  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
     .modal-content h3 { margin-top: 0; color: white; margin-bottom: 20px; font-weight: 700; }
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; margin-bottom: 5px; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
@@ -279,7 +279,7 @@
                                 @endphp
                                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color);">
                                     <label style="color:white; font-size: 0.85rem; margin-bottom: 5px; display: block;">Day {{ $i }}</label>
-                                    <select name="days[{{ $i }}]" style="width: 100%; padding: 5px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.8rem;">
+                                    <select name="days[{{ $i }}]" style="width: 100%; padding: 5px; background: rgba(0,0,0,0.85); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.8rem;">
                                         <option value="" style="color:#ef4444;">-- OFF DAY --</option>
                                         @foreach($shifts as $s)
                                             <option value="{{ $s->id }}" {{ $currentShift == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>

@@ -80,6 +80,13 @@
     }
 
     /* Global pagination from app.blade.php applies here */
+    .dropdown-menu.show { display: block !important; }
+    .dropdown-menu a:hover { background: rgba(255,255,255,0.05) !important; }
+</style>
+@endpush
+
+@push('scripts')
+<script>
 // Close dropdown when clicking outside
 document.addEventListener('click', function(event) {
     var menu = document.getElementById('exportMenu');
@@ -88,10 +95,6 @@ document.addEventListener('click', function(event) {
     }
 });
 </script>
-<style>
-    .dropdown-menu.show { display: block !important; }
-    .dropdown-menu a:hover { background: rgba(255,255,255,0.05) !important; }
-</style>
 @endpush
 
 @section('content')
@@ -116,7 +119,7 @@ document.addEventListener('click', function(event) {
     </div>
     
     <form id="autoSearchForm" action="/attendance" method="GET">
-        <div class="search-filter-bar glass-card">
+        <div class="search-filter-bar glass-card" style="position: relative; z-index: 999;">
             <div class="search-box">
                 <i class="fas fa-search"></i>
                 <input id="autoSearchInput" type="text" class="glass-input" name="search" value="{{ $search }}" placeholder="{{ __('Search by name or ID...') }}">
@@ -135,11 +138,11 @@ document.addEventListener('click', function(event) {
                     {{ __('Reset') }}
                 </a>
                 
-                <div style="position: relative;">
+                <div style="position: relative; z-index: 999;">
                     <button type="button" class="glass-btn" style="background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); box-shadow: none;" onclick="document.getElementById('exportMenu').classList.toggle('show')">
                         <i class="fas fa-download"></i> {{ __('Export') }} <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>
                     </button>
-                    <div id="exportMenu" class="dropdown-menu" style="display: none; position: absolute; top: 100%; right: 0; background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 12px; margin-top: 5px; z-index: 100; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); min-width: 180px; backdrop-filter: blur(16px);">
+                    <div id="exportMenu" class="dropdown-menu" style="display: none; position: absolute; top: 100%; right: 0; background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 12px; margin-top: 5px; z-index: 100; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); min-width: 180px; ">
                         <a href="{{ route('attendance.export.pdf', request()->all()) }}" target="_blank" style="display: block; padding: 12px 15px; color: white; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.05); transition: 0.2s;">
                             <i class="fas fa-file-pdf" style="color: #f43f5e; width: 20px;"></i> {{ __('Export PDF') }}
                         </a>

@@ -120,7 +120,7 @@
     .shift-unassigned { background: transparent; border: 1px dashed var(--border-color); color: var(--text-muted); cursor: pointer; }
     .shift-unassigned:hover { background: rgba(255,255,255,0.05); }
 
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 9999; align-items: center; justify-content: center; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);  z-index: 9999; align-items: center; justify-content: center; }
     .modal-content { padding: 30px; width: 400px; max-width: 90%; }
     .form-control { width: 100%; padding: 10px; background: rgba(0,0,0,0.2); color: white; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 15px;}
 
@@ -304,6 +304,9 @@
 </div>
 @endif
 
+@endsection
+
+@push('scripts')
 <script>
     document.getElementById('employeeSearch').addEventListener('input', function(e) {
         let searchTerm = e.target.value.toLowerCase();
@@ -319,9 +322,6 @@
         });
     });
 </script>
-@endsection
-
-@push('scripts')
 <script>
     function openEditDay(date, currentShift) {
         document.getElementById('edit_date').value = date;

@@ -46,8 +46,8 @@
         display: none;
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(15, 23, 42, 0.8);
-        backdrop-filter: blur(5px);
+        background: rgba(15, 23, 42, 0.95);
+        
         z-index: 1000;
         align-items: center;
         justify-content: center;

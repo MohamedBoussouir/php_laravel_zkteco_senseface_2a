@@ -37,7 +37,7 @@
     <h1 class="page-title"><a href="/employees" style="color: var(--text-muted); text-decoration: none;"><i class="fas fa-arrow-left"></i></a> {{ __('Add New Employee') }}</h1>
 </div>
 
-<div class="glass-card" style="max-width: 600px; margin: 0 auto;">
+<div class="glass-card" style="max-width: 600px; margin: 0 auto; padding: 30px;">
     <form action="/employees" method="POST">
         @csrf
         

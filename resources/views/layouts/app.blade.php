@@ -10,8 +10,8 @@
     <style>
         :root {
             --bg-color: #0b1120; /* Darker, richer navy */
-            --sidebar-bg: rgba(15, 23, 42, 0.6);
-            --card-bg: rgba(30, 41, 59, 0.4);
+            --sidebar-bg: #0f172a;
+            --card-bg: #1e293b;
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-glow: rgba(59, 130, 246, 0.15);
             --text-main: #f8fafc;
@@ -41,8 +41,8 @@
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            
+            
             border-right: 1px solid var(--glass-border);
             display: flex;
             flex-direction: column;
@@ -180,8 +180,8 @@
         /* Glassmorphism Utilities */
         .glass-card {
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            
+            
             border: 1px solid var(--glass-border);
             border-radius: 16px;
             box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
@@ -195,18 +195,20 @@
         }
 
         .glass-input {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: white;
-            padding: 10px 15px;
+            padding: 12px 15px;
             border-radius: 10px;
             outline: none;
             transition: all 0.3s;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 0.95rem;
         }
         .glass-input:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 0 3px var(--accent-glow), inset 0 2px 4px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .glass-btn {
@@ -276,8 +278,8 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.85);
+            
             z-index: 90;
         }
         .mobile-overlay.active { display: block; }
@@ -289,8 +291,8 @@
             align-items: center;
             padding: 15px 20px;
             background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            
+            
             border-bottom: 1px solid var(--glass-border);
             position: sticky;
             top: 0;
@@ -454,7 +456,7 @@
             snapshotUrl: "http://192.168.0.105/cgi-bin/snapshot.cgi"
         };
     </script>
-    <div id="sip-call-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+    <div id="sip-call-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.95);  z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
         <div class="glass-card" style="padding: 40px; text-align: center; max-width: 450px; width: 100%;">
             <div style="width: 80px; height: 80px; background: rgba(59, 130, 246, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; color: var(--accent); font-size: 2.2rem; box-shadow: 0 0 20px var(--accent-glow);">
                 <i class="fas fa-phone-volume fa-shake"></i>

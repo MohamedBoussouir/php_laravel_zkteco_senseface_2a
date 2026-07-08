@@ -60,6 +60,8 @@
         .top-bar { flex-direction: column; align-items: flex-start !important; gap: 15px; }
         .filter-card { padding: 15px; }
     }
+    .dropdown-menu.show { display: block !important; }
+    .dropdown-menu a:hover { background: rgba(255,255,255,0.05) !important; }
 </style>
 @endpush
 
@@ -70,7 +72,7 @@
 </div>
 
 <!-- Filters -->
-<div class="filter-card glass-card">
+<div class="filter-card glass-card" style="position: relative; z-index: 999;">
     <form id="reportFilterForm" action="/reports/absence" method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: flex-end;">
         <div style="grid-column: span 2;">
             <label style="display:block; margin-bottom:8px; color:var(--text-muted); font-size:0.9rem;">{{ __('Search Employee') }}</label>
@@ -139,7 +141,7 @@
                 <i class="fas fa-filter"></i> {{ __('Apply Filters') }}
             </button>
             
-            <div style="position: relative; flex: 1;">
+            <div style="position: relative; flex: 1; z-index: 999;">
                 <button type="button" class="glass-btn" style="width: 100%; justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); box-shadow: none;" onclick="document.getElementById('exportMenu').classList.toggle('show')">
                     <i class="fas fa-download"></i> {{ __('Export') }} <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 5px;"></i>
                 </button>
@@ -397,8 +399,4 @@
         }
     });
 </script>
-<style>
-    .dropdown-menu.show { display: block !important; }
-    .dropdown-menu a:hover { background: rgba(255,255,255,0.05) !important; }
-</style>
 @endpush

@@ -34,6 +34,9 @@ Route::get('lang/{locale}', function ($locale) {
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/api/latest-attendance', function () {
         $latest = \App\Models\Attendance::with('user')->orderBy('id', 'desc')->first();
+        if ($latest && $latest->user) {
+            $latest->user->makeHidden(['photo', 'fingerprints']);
+        }
         return response()->json($latest);
     });
     Route::get('/', [DashboardController::class, 'index']);
