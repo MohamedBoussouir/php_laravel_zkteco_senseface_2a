@@ -149,6 +149,59 @@
                 </div>
             </div>
 
+            @empty
+            <div class="empty-state">
+                <i class="fas fa-layer-group"></i>
+                <p>{{ __('No work patterns defined.') }}</p>
+            </div>
+            @endforelse
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 20px;">
+    <div class="card glass-card">
+        <div class="card-header">
+            <div class="card-title"><i class="fas fa-calendar-days text-blue-400"></i> {{ __('Monthly Work Patterns (31 Days)') }}</div>
+            <button class="glass-btn" onclick="document.getElementById('addMonthlyPatternModal').style.display='flex'">
+                <i class="fas fa-plus"></i> {{ __('Add Monthly Pattern') }}
+            </button>
+        </div>
+        
+        <div class="grid-container">
+            @forelse($monthlyPatterns as $pattern)
+            <div class="list-item">
+                <div class="item-info">
+                    <h4>{{ $pattern->name }}</h4>
+                    <p>{{ $pattern->days->count() }} days configured</p>
+                </div>
+                <div style="display:flex; gap: 5px;">
+                    <button class="action-btn btn-blue" onclick="document.getElementById('configMonthlyPatternModal{{ $pattern->id }}').style.display='flex'" title="Configure 31 Days">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="action-btn btn-yellow" onclick="document.getElementById('assignMonthlyPatternModal{{ $pattern->id }}').style.display='flex'" title="Assign to Users">
+                        <i class="fas fa-users"></i>
+                    </button>
+                    <button class="action-btn btn-green" onclick="openEditMonthlyPattern({{ $pattern->id }}, '{{ addslashes($pattern->name) }}')" title="Edit Pattern Name">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <form action="/schedules/monthly-patterns/{{ $pattern->id }}/delete" method="POST" onsubmit="return confirm('Delete this monthly pattern?');" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="action-btn btn-red" title="Delete"><i class="fas fa-trash"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            @empty
+            <div style="text-align:center; padding: 20px; color: var(--text-muted); grid-column: 1 / -1;">No monthly patterns defined.</div>
+            @endforelse
+        </div>
+    </div>
+</div>
+
+
+<!-- Work Pattern Modals -->
+@foreach($workPatterns as $pattern)
             <!-- Configure Pattern Days Modal -->
             <div id="configPatternModal{{ $pattern->id }}" class="modal-overlay">
                 <div class="modal-content" style="width: 500px;">
@@ -209,49 +262,10 @@
                 </div>
             </div>
 
-            @empty
-            <div class="empty-state">
-                <i class="fas fa-layer-group"></i>
-                <p>{{ __('No work patterns defined.') }}</p>
-            </div>
-            @endforelse
-        </div>
-    </div>
-</div>
+@endforeach
 
-<div style="margin-top: 20px;">
-    <div class="card glass-card">
-        <div class="card-header">
-            <div class="card-title"><i class="fas fa-calendar-days text-blue-400"></i> {{ __('Monthly Work Patterns (31 Days)') }}</div>
-            <button class="glass-btn" onclick="document.getElementById('addMonthlyPatternModal').style.display='flex'">
-                <i class="fas fa-plus"></i> {{ __('Add Monthly Pattern') }}
-            </button>
-        </div>
-        
-        <div class="grid-container">
-            @forelse($monthlyPatterns as $pattern)
-            <div class="list-item">
-                <div class="item-info">
-                    <h4>{{ $pattern->name }}</h4>
-                    <p>{{ $pattern->days->count() }} days configured</p>
-                </div>
-                <div style="display:flex; gap: 5px;">
-                    <button class="action-btn btn-blue" onclick="document.getElementById('configMonthlyPatternModal{{ $pattern->id }}').style.display='flex'" title="Configure 31 Days">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    <button class="action-btn btn-yellow" onclick="document.getElementById('assignMonthlyPatternModal{{ $pattern->id }}').style.display='flex'" title="Assign to Users">
-                        <i class="fas fa-users"></i>
-                    </button>
-                    <button class="action-btn btn-green" onclick="openEditMonthlyPattern({{ $pattern->id }}, '{{ addslashes($pattern->name) }}')" title="Edit Pattern Name">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <form action="/schedules/monthly-patterns/{{ $pattern->id }}/delete" method="POST" onsubmit="return confirm('Delete this monthly pattern?');" style="display:inline;">
-                        @csrf
-                        <button type="submit" class="action-btn btn-red" title="Delete"><i class="fas fa-trash"></i></button>
-                    </form>
-                </div>
-            </div>
-
+<!-- Monthly Pattern Modals -->
+@foreach($monthlyPatterns as $pattern)
             <!-- Configure 31 Days Modal -->
             <div id="configMonthlyPatternModal{{ $pattern->id }}" class="modal-overlay">
                 <div class="modal-content" style="width: 800px;">
@@ -310,12 +324,7 @@
                 </div>
             </div>
 
-            @empty
-            <div style="text-align:center; padding: 20px; color: var(--text-muted); grid-column: 1 / -1;">No monthly patterns defined.</div>
-            @endforelse
-        </div>
-    </div>
-</div>
+@endforeach
 
 <!-- Modals for Creation/Editing -->
 
